@@ -1,0 +1,31 @@
+{
+  "name": "threejs-journey-exercise",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "list": "npm list --depth=0",
+    "outdated": "npm outdated --depth=0",
+    "update": "npm update",
+    "build": "vite build",
+    "deploy": "vercel --prod",
+    "uninstall": "rm -rf node_modules && rm -rf dist && rm package-lock.json"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-basic-ssl": "^1.2.0",
+    "@vitejs/plugin-react": "^4.3.4",
+    "vite-plugin-restart": "^0.4.2",
+    "vite": "^6.2.0"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.0.2",
+    "@react-three/fiber": "^9.0.4",
+    "@react-three/handle": "^6.6.8",
+    "@react-three/xr": "^6.6.8",
+    "react-dom": "19.0.0",
+    "react": "19.0.0",
+    "three": "^0.173.0",
+    "vite-plugin-glsl": "^1.3.2"
+  }
+}
