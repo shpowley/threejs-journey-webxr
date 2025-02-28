@@ -1,7 +1,7 @@
 import { Center, OrbitControls, shaderMaterial, Sparkles, useGLTF, useTexture } from '@react-three/drei'
 import { Canvas, extend, useFrame } from '@react-three/fiber'
 import { Handle, HandleTarget } from '@react-three/handle'
-import { createXRStore, IfInSessionMode, useXR, useXRStore, XR, XROrigin } from '@react-three/xr'
+import { createXRStore, IfInSessionMode, useXRControllerLocomotion, XR, XROrigin } from '@react-three/xr'
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
@@ -29,9 +29,8 @@ const xr_store = createXRStore({
     foveation: 1,
 
     hand: {
-        rayPointer: false,
-
         model: {
+            // special technique allows hands to be rendered over 3d content
             colorWrite: false,
             renderOrder: -1
         }
@@ -98,87 +97,109 @@ const Portal = ({ fireflies_scale = 1, ar_mode = false }) => {
     </>
 }
 
-const Experience = () => {
+const ContentVR = () => {
     const refs = {
-        portal: useRef(),
-        floor: useRef()
+        origin: useRef()
     }
 
-    const
-        in_xr_session = useXR(s => s.session != null),
-        xr_mode = useXRStore().getState().mode
+    // controller locomotion around the scene
+    // https://pmndrs.github.io/xr/docs/getting-started/all-hooks#usexrcontrollerlocomotion
+    useXRControllerLocomotion(
+        refs.origin,
+        { speed: 0.8 },
+        { degrees: 45 }
+    )
+
+    return <>
+        <XROrigin
+            ref={refs.origin}
+            scale={DEFAULTS.VR.SCALE}
+            position={DEFAULTS.VR.POSITION}
+        />
+
+        <Portal fireflies_scale={1 / DEFAULTS.VR.SCALE} />
+    </>
+}
+
+const ContentAR = () => {
+    const refs = {
+        portal: useRef(),
+        handle: useRef()
+    }
 
     useEffect(() => {
-        if (in_xr_session && xr_mode === 'immersive-ar' && refs.floor.current) {
-            refs.floor.current.position.fromArray([
+        if (refs.handle.current) {
+            // initial placement of the boxGeometry handle
+            refs.handle.current.position.fromArray([
                 DEFAULTS.AR.POSITION[0],
                 DEFAULTS.AR.POSITION[1] - DEFAULTS.HANDLE_OFFSET_Y,
                 DEFAULTS.AR.POSITION[2]
             ])
         }
-    }, [xr_mode, in_xr_session])
+    }, [])
 
+    // grabbing and placement
+    // https://pmndrs.github.io/xr/docs/handles/introduction
     return <>
-        {/* the 'original' non-xr scene */}
-        <IfInSessionMode deny={['immersive-ar', 'immersive-vr']}>
-            <OrbitControls makeDefault />
-
-            <Center>
-                <Portal />
-            </Center>
-        </IfInSessionMode>
-
-        {/* immersive vr - room scale */}
-        <IfInSessionMode allow={'immersive-vr'}>
-            <XROrigin
-                scale={DEFAULTS.VR.SCALE}
-                position={DEFAULTS.VR.POSITION}
+        <group
+            ref={refs.portal}
+            scale={DEFAULTS.AR.SCALE}
+            position={DEFAULTS.AR.POSITION}
+        >
+            <Portal
+                fireflies_scale={DEFAULTS.AR.SCALE}
+                ar_mode
             />
+        </group>
 
-            <Portal fireflies_scale={1 / DEFAULTS.VR.SCALE} />
-        </IfInSessionMode>
+        <HandleTarget ref={refs.handle}>
+            <Handle
+                targetRef={'from-context'}
+                scale={false}
+                translate={true}
+                rotate={'y'}
+                multitouch={true}
 
-        {/* mixed reality - toy scale */}
-        <IfInSessionMode allow={'immersive-ar'}>
-            <group
-                ref={refs.portal}
-                scale={DEFAULTS.AR.SCALE}
-                position={DEFAULTS.AR.POSITION}
+                // move/rotate boxGeometry "handle" and copy to the portal scene
+                apply={(state, target) => {
+                    target.position.copy(state.current.position)
+                    refs.portal.current.position.copy(target.position)
+                    refs.portal.current.position.y += DEFAULTS.HANDLE_OFFSET_Y // maintain scene's vertical offset
+
+                    refs.portal.current.rotation.y = target.rotation.y = state.current.rotation.y
+                }}
             >
-                <Portal
-                    fireflies_scale={DEFAULTS.AR.SCALE}
-                    ar_mode
-                />
-            </group>
-
-            <HandleTarget ref={refs.floor}>
-                <Handle
-                    targetRef={'from-context'}
-                    scale={false}
-                    translate={true}
-                    rotate={'y'}
-                    // rotate={false}
-                    multitouch={false}
-
-                    apply={(state, target) => {
-                        target.position.copy(state.current.position)
-                        refs.portal.current.position.copy(target.position)
-                        refs.portal.current.position.y += DEFAULTS.HANDLE_OFFSET_Y
-
-                        refs.portal.current.rotation.y = target.rotation.y = state.current.rotation.y
-                    }}
-                >
-                    <mesh>
-                        <boxGeometry args={[0.6, 0.01, 0.6]} />
-                        <meshBasicMaterial color={0xfcba03} />
-                    </mesh>
-                </Handle>
-            </HandleTarget>
-        </IfInSessionMode >
+                <mesh>
+                    <boxGeometry args={[0.6, 0.01, 0.6]} />
+                    <meshBasicMaterial color={0xfcba03} />
+                </mesh>
+            </Handle>
+        </HandleTarget>
     </>
 }
 
-function ExperienceXR() {
+const Experience = () => <>
+    {/* the 'original' non-xr scene */}
+    <IfInSessionMode deny={['immersive-ar', 'immersive-vr']}>
+        <OrbitControls makeDefault />
+
+        <Center>
+            <Portal />
+        </Center>
+    </IfInSessionMode>
+
+    {/* immersive vr - room scale */}
+    <IfInSessionMode allow={'immersive-vr'}>
+        <ContentVR />
+    </IfInSessionMode>
+
+    {/* mixed reality - toy scale */}
+    <IfInSessionMode allow={'immersive-ar'}>
+        <ContentAR />
+    </IfInSessionMode >
+</>
+
+const ExperienceXR = () => {
     return <>
         <div id='title'>
             <a href='https://threejs-journey.com/'>three.js journey</a><br />
@@ -188,7 +209,7 @@ function ExperienceXR() {
         {/* VR mode buttons */}
         <div id='div_buttons'>
             {
-                // disable vr mode on mobile (mobile vr is deprecated more or less)
+                // disable vr mode on mobile (mobile vr is deprecated more or less, e.g. google cardboard)
                 !is_mobile_device && navigator?.xr?.isSessionSupported('immersive-vr') &&
                 <button onClick={() => xr_store.enterVR()}>VR</button>
             }
