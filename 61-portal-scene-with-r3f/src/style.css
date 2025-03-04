@@ -1,5 +1,11 @@
 * {
     font-family: monospace;
+    -webkit-tap-highlight-color: transparent;
+}
+
+:root {
+    --dialog-width: 600px;
+    --dialog-height: 800px;
 }
 
 html,
@@ -20,36 +26,136 @@ body {
     user-select: none;
 }
 
+a {
+    color: #00e;
+}
+
+.button_color {
+    background: #d2d2d2;
+}
+
+#button_close {
+    border: none;
+    color: black;
+    cursor: pointer;
+    box-shadow: #00000050 -2px 2px 2px;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border-radius: 50%;
+    position: absolute;
+    top: -10px;
+    right: -10px;
+}
+
+#button_close:active {
+    transform:scale(1.2)
+}
+
 #div_buttons {
     display: flex;
     position: absolute;
     left: 50%;
     transform: translate(-50%, 0);
     bottom: 2rem;
-    gap: 1.5rem;
-    z-index: 10000;
+    gap: 1.2rem;
+    z-index: 100;
 }
 
 #div_buttons button {
-    background: white;
     border: none;
     color: black;
     cursor: pointer;
-    box-shadow: rgba(0, 0, 0, 0.2) 0px 0px 20px;
-    width: 70px;
-    height: 60px;
-    font-size: 2rem;
+    box-shadow: #00000050 -2px 2px 2px;
+    width: 58px;
+    height: 54px;
+    font-size: 1.8rem;
+    padding: 0;
+    border-radius: 10px;
+}
+
+#div_buttons button:active {
+    transform: scale(1.2)
+}
+
+#button_quest {
+    background-image: url('quest.webp');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position-y: -2px;
+}
+
+#image_vr {
+    --size: 60px;
+    position: absolute;
+    z-index: 102;
+    bottom: 40px;
+    left: calc(50% - var(--size) / 2);
+    width: var(--size);
+}
+
+#image_vr:active {
+    transform: scale(1.2);
+}
+
+#div_qr_share, #div_info {
+    width: 84%;
+    position: absolute;
+}
+
+#div_info {
+    top: 60px;
+    font-size: 2.3em;
+}
+
+#div_qr_share {
+    display: none;
+    top: 140px;
+}
+
+#image_qr_share {
+    width: 80%;
+    max-width: 400px;
+    position: relative;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#text_share {
+    padding-top: 10px;
+    font-size: 2.2em;
+    text-align: center;
+}
+
+#image_quest {
+    height: 48px;
+    vertical-align: middle;
+}
+
+#image_info {
+    height: 44px;
+    vertical-align: middle;
+}
+
+#image_qr_code {
+    height: 46px;
+    vertical-align: middle;
+}
+
+#image_exit {
+    height: 40px;
+    vertical-align: middle;
 }
 
 #title {
+    --spacing: 22px;
     position: absolute;
-    top: 0;
-    left: 0;
+    top: var(--spacing);
+    left: var(--spacing);
     color: antiquewhite;
     z-index: 100;
-    font-size: 1.3rem;
-    padding: 1.2rem;
-    line-height: 2rem;
+    font-size: 1.4rem;
+    line-height: 2.1rem;
 }
 
 #title a {
@@ -57,10 +163,89 @@ body {
     color: antiquewhite;
 }
 
-@media screen and (orientation: portrait) {
+.modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    outline: none;
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+div#modal_vr {
+    opacity: 0;
+    display: none;
+}
+
+div#dialog_vr {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: var(--dialog-width);
+    height: var(--dialog-height);
+    border-radius: 10px;
+    background-color: #718a96f0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+}
+
+/* fixes mobile hover */
+@media (min-height: 901px) {
+    #button_close:hover {
+        transform:scale(1.2)
+    }
+
+    #div_buttons button:hover {
+        transform: scale(1.2)
+    }
+
+    #image_vr:hover {
+        transform: scale(1.2);
+        cursor: pointer;
+    }
+}
+
+@media (max-height: 900px) {
+    :root {
+        --spacing: 18px;
+        --dialog-width: 320px;
+        --dialog-height: 460px;
+    }
+
     #title {
         font-size: 1.1rem;
-        padding: 1rem;
-        line-height: 1.7rem;
+        line-height: 1.9rem;
+    }
+
+    #image_vr {
+        --size: 46px;
+        bottom: 30px;
+    }
+
+    #div_buttons {
+        gap: 0.9rem;
+    }
+
+    #div_buttons button {
+        transform: scale(0.9);
+    }
+
+    #div_info {
+        top: 40px;
+        font-size: 1.2em;
+    }
+
+    #div_qr_share {
+        top: 80px;
+    }
+
+    #text_share {
+        font-size: 1.2em;
     }
 }

@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
 import { XRCameraRestore } from '../src/components/XRCameraRestore'
-import { isMobile } from './common/Utils.js'
+import { DOMOverlay } from './components/DOMOverlay.jsx'
 import portalFragmentShader from './shaders/portal/fragment.glsl'
 import portalVertexShader from './shaders/portal/vertex.glsl'
 
@@ -43,8 +43,6 @@ const xr_store = createXRStore({
         }
     },
 })
-
-const is_mobile_device = isMobile()
 
 const PortalMaterial = shaderMaterial(
     {
@@ -201,24 +199,7 @@ const Experience = () => <>
 
 const ExperienceXR = () => {
     return <>
-        <div id='title'>
-            <a href='https://threejs-journey.com/'>three.js journey</a><br />
-            Portal Scene with R3F
-        </div>
-
-        {/* VR mode buttons */}
-        <div id='div_buttons'>
-            {
-                // disable vr mode on mobile (mobile vr is deprecated more or less, e.g. google cardboard)
-                !is_mobile_device && navigator?.xr?.isSessionSupported('immersive-vr') &&
-                <button onClick={() => xr_store.enterVR()}>VR</button>
-            }
-
-            {
-                navigator?.xr?.isSessionSupported('immersive-ar') &&
-                <button onClick={() => xr_store.enterAR()}>AR</button>
-            }
-        </div>
+        <DOMOverlay />
 
         <Canvas
             flat

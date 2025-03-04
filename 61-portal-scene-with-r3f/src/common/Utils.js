@@ -1,6 +1,17 @@
+const
+  XR_URL = 'https://threejs-journey-portal-webxr.vercel.app',
+  USER_AGENT = navigator.userAgent.toLowerCase()
+
 function isMobileUserAgent() {
-  const userAgent = navigator.userAgent.toLowerCase()
-  return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/.test(userAgent)
+  return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/.test(USER_AGENT)
+}
+
+function isAppleUserAgent() {
+  return /iphone|ipad/.test(USER_AGENT)
+}
+
+function isOculusUserAgent() {
+  return /oculusbrowser/.test(USER_AGENT)
 }
 
 function isTouchDevice() {
@@ -11,4 +22,55 @@ function isMobile() {
   return isMobileUserAgent() && isTouchDevice()
 }
 
-export { isMobile }
+function isAppleMobile() {
+  return isAppleUserAgent() && isTouchDevice()
+}
+
+function openDialog(dialog) {
+  dialog.style.display = 'flex'
+
+  dialog
+    .animate(
+      [
+        { opacity: 0 },
+        { opacity: 1 },
+      ],
+      {
+        duration: 500,
+        easing: 'ease-in-out',
+      }
+    )
+    .onfinish = () => {
+      dialog.style.opacity = 1
+    }
+}
+
+function closeDialog(dialog) {
+  dialog
+    .animate(
+      [
+        { opacity: 1 },
+        { opacity: 0 },
+      ],
+      {
+        duration: 500,
+        easing: 'ease-in-out',
+      }
+    )
+    .onfinish = () => {
+      dialog.style = null
+    }
+}
+
+// https://developers.meta.com/horizon/documentation/web/web-launch/
+function metaQuestWebLaunch(e) {
+  let quest_url = new URL('https://oculus.com/open_url/')
+  quest_url.searchParams.set('url', XR_URL)
+  window.open(quest_url, '_blank').focus()
+}
+
+export {
+  isMobile, isAppleMobile,
+  openDialog, closeDialog,
+  isOculusUserAgent, metaQuestWebLaunch
+}
