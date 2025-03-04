@@ -6,7 +6,7 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
 import { XRCameraRestore } from '../src/components/XRCameraRestore'
-import { isMobile } from './common/Utils.js'
+import { isAppleMobile, isMobile } from './common/Utils.js'
 import { DOMOverlay } from './components/DOMOverlay.jsx'
 import portalFragmentShader from './shaders/portal/fragment.glsl'
 import portalVertexShader from './shaders/portal/vertex.glsl'
@@ -19,7 +19,13 @@ const DEFAULTS = {
 
     AR: {
         SCALE: 0.15,
-        POSITION: isMobile() ? [0, 0.9, -0.55] : [0, 0.8, -0.7]
+
+        POSITION: isAppleMobile() ?
+            [0, 1.4, -0.5] :
+
+            isMobile() ?
+                [0, 0.9, -0.55] :
+                [0, 0.8, -0.7]
     },
 
     HANDLE_OFFSET_Y: 0.0055

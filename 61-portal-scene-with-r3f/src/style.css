@@ -47,7 +47,7 @@ a {
     top: -10px;
     right: -10px;
 
-    background-image: url('close_small.svg');
+    background-image: url('../public/close_small.svg');
     background-size: 80%;
     background-repeat: no-repeat;
     background-position: 50% 50%;
@@ -84,7 +84,7 @@ a {
 }
 
 #button_quest {
-    background-image: url('quest.webp');
+    background-image: url('../public/quest.webp');
     background-size: cover;
     background-repeat: no-repeat;
     background-position-y: -2px;
@@ -96,17 +96,17 @@ a {
 }
 
 #button_eyejack {
-    background-image: url('eyejack_logo.svg');
+    background-image: url('../public/eyejack_logo.svg');
     background-size: 78%;
 }
 
 #button_qr_code {
-    background-image: url('qr_code.svg');
+    background-image: url('../public/qr_code.svg');
     background-size: 80%;
 }
 
 #button_info {
-    background-image: url('info.svg');
+    background-image: url('../public/info.svg');
     background-size: 70%;
 }
 

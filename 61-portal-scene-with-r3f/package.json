@@ -13,7 +13,7 @@
     "uninstall": "rm -rf node_modules && rm -rf dist && rm package-lock.json"
   },
   "devDependencies": {
-    "@vitejs/plugin-basic-ssl": "^1.2.0",
+    "@vitejs/plugin-basic-ssl": "^2.0.0",
     "@vitejs/plugin-react": "^4.3.4",
     "vite-plugin-restart": "^0.4.2",
     "vite": "^6.2.0"
