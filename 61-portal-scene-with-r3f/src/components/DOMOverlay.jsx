@@ -1,10 +1,16 @@
 import { useCallback, useRef } from 'react'
 
-import { isMobile, openDialog, closeDialog, metaQuestWebLaunch } from '../common/Utils'
+import {
+    appClipLaunch,
+    closeDialog,
+    isAppleMobile,
+    isMobile,
+    isOculusUserAgent,
+    metaQuestWebLaunch,
+    openDialog
+} from '../common/Utils'
 
-const is_mobile_device = isMobile()
-
-const DOMOverlay = () => {
+const DOMOverlay = ({ xr_store }) => {
     const refs = {
         modal_vr: useRef(),
         div_info: useRef(),
@@ -56,16 +62,9 @@ const DOMOverlay = () => {
                 {/* close button */}
                 <button
                     id='button_close'
-                    className='button_color'
-                >
-                    <img
-                        id='image_exit'
-                        src='/close_small.svg'
-
-                        onContextMenu={e => e.preventDefault()}
-                        onPointerDown={handlers.closeModal}
-                    />
-                </button>
+                    className='class_button_color'
+                    onClick={handlers.closeModal}
+                />
 
                 {/* QR code content */}
                 <div
@@ -77,7 +76,10 @@ const DOMOverlay = () => {
                         src='/eyejack.webp'
                     />
 
-                    <div id='text_share'>QR Code (Android or iOS)</div>
+                    <div id='text_share'>
+                        Scan the QR Code<br />
+                        (Android or iOS)
+                    </div>
                 </div>
 
                 {/* info content */}
@@ -87,14 +89,15 @@ const DOMOverlay = () => {
                 >
                     <p>
                         <a href='https://threejs-journey.com'>three.js journey</a><br />
-                        Become a Three.js developer
+                        become a three.js developer
                     </p>
                     <p>
                         <a href='https://github.com/pmndrs/xr'>react-three/xr</a><br />
-                        VR/AR for react-three-fiber
+                        vr/ar for react-three-fiber
                     </p>
                     <p>
-                        <a href='https://play.eyejack.xyz'>eyejack</a> webXR on iOS
+                        <a href='https://play.eyejack.xyz'>eyejack</a> (app clips)<br />
+                        play webxr on ios
                     </p>
                     <p>
                         <a href='https://fonts.google.com/icons'>google fonts</a> icons
@@ -104,8 +107,8 @@ const DOMOverlay = () => {
                     </p>
                     <br />
                     <p>
-                        refactored for VR/AR<br />
-                        Sung Powley <a href='https://bsky.app/profile/sung-powley.bsky.social'>bluesky</a>
+                        refactored for webxr<br />
+                        sung powley <a href='https://bsky.app/profile/sung-powley.bsky.social'>bluesky</a>
                     </p>
 
                 </div>
@@ -114,52 +117,63 @@ const DOMOverlay = () => {
                 <div id='div_buttons'>
                     {
                         // disable vr mode on mobile (mobile vr is deprecated more or less, e.g. google cardboard)
-                        !is_mobile_device && navigator?.xr?.isSessionSupported('immersive-vr') &&
+                        !isMobile() && navigator?.xr?.isSessionSupported('immersive-vr') &&
                         <button
-                            title='immersive VR experience'
-                            className='button_color'
-                            onClick={() => xr_store.enterVR()}
+                            title='launch immersive-VR'
+                            className='class_button_color'
+                            onClick={() => xr_store?.enterVR()}
                         >
                             VR
                         </button>
                     }
 
                     {
-                        navigator?.xr?.isSessionSupported('immersive-ar') &&
-                        <button
-                            title='mixed-reality experience'
-                            className='button_color'
-                            onClick={() => xr_store.enterAR()}
-                        >
-                            AR
-                        </button>
+                        navigator?.xr?.isSessionSupported('immersive-ar') ?
+                            <button
+                                title='launch mixed-reality'
+                                className='class_button_color'
+                                onClick={() => xr_store?.enterAR()}
+                            >
+                                AR
+                            </button> :
+
+                            isAppleMobile() &&
+                            <button
+                                id='button_eyejack'
+                                title='eyejack app clip'
+                                className='class_button_color'
+                                onClick={appClipLaunch}
+                            />
                     }
 
-                    <button
-                        id='button_quest'
-                        title='Quest browser Web Launch'
-                        onClick={metaQuestWebLaunch}
-                    />
+                    {
+                        // for quest headset..
+                        // - don't show 'quest web launch' -- already here
+                        // - don't show qr code -- no way of sharing/scanning in headset
+                        // - don't show info button -- redundant. info already displayed
+                        !isOculusUserAgent() &&
+                        <>
+                            <button
+                                id='button_quest'
+                                title='Quest browser Web Launch'
+                                onClick={metaQuestWebLaunch}
+                            />
 
-                    <button className='button_color'>
-                        <img
-                            id='image_qr_code'
-                            src='/qr_code.svg'
-                            title='share QR code'
-                            onPointerDown={() => handlers.showButtonContent(refs.div_qr.current)}
-                            onContextMenu={e => e.preventDefault()}
-                        />
-                    </button>
+                            <button
+                                id='button_qr_code'
+                                className='class_button_color'
+                                title='share QR code'
+                                onClick={() => handlers.showButtonContent(refs.div_qr.current)}
+                            />
 
-                    <button className='button_color'>
-                        <img
-                            id='image_info'
-                            src='/info.svg'
-                            title='more info'
-                            onPointerDown={() => handlers.showButtonContent(refs.div_info.current)}
-                            onContextMenu={e => e.preventDefault()}
-                        />
-                    </button>
+                            <button
+                                id='button_info'
+                                className='class_button_color'
+                                title='more info'
+                                onClick={() => handlers.showButtonContent(refs.div_info.current)}
+                            />
+                        </>
+                    }
                 </div>
             </div>
         </div>

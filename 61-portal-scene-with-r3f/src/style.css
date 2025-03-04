@@ -30,7 +30,7 @@ a {
     color: #00e;
 }
 
-.button_color {
+.class_button_color {
     background: #d2d2d2;
 }
 
@@ -46,6 +46,11 @@ a {
     position: absolute;
     top: -10px;
     right: -10px;
+
+    background-image: url('close_small.svg');
+    background-size: 80%;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
 }
 
 #button_close:active {
@@ -83,6 +88,26 @@ a {
     background-size: cover;
     background-repeat: no-repeat;
     background-position-y: -2px;
+}
+
+#button_eyejack, #button_qr_code, #button_info {
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+}
+
+#button_eyejack {
+    background-image: url('eyejack_logo.svg');
+    background-size: 78%;
+}
+
+#button_qr_code {
+    background-image: url('qr_code.svg');
+    background-size: 80%;
+}
+
+#button_info {
+    background-image: url('info.svg');
+    background-size: 70%;
 }
 
 #image_vr {
@@ -129,21 +154,6 @@ a {
 
 #image_quest {
     height: 48px;
-    vertical-align: middle;
-}
-
-#image_info {
-    height: 44px;
-    vertical-align: middle;
-}
-
-#image_qr_code {
-    height: 46px;
-    vertical-align: middle;
-}
-
-#image_exit {
-    height: 40px;
     vertical-align: middle;
 }
 
@@ -238,11 +248,15 @@ div#dialog_vr {
 
     #div_info {
         top: 40px;
-        font-size: 1.2em;
+        font-size: 1.15em;
     }
 
     #div_qr_share {
-        top: 80px;
+        top: 60px;
+    }
+
+    #image_qr_share {
+        width: 90%;
     }
 
     #text_share {

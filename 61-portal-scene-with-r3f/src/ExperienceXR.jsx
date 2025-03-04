@@ -6,6 +6,7 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
 import { XRCameraRestore } from '../src/components/XRCameraRestore'
+import { isMobile } from './common/Utils.js'
 import { DOMOverlay } from './components/DOMOverlay.jsx'
 import portalFragmentShader from './shaders/portal/fragment.glsl'
 import portalVertexShader from './shaders/portal/vertex.glsl'
@@ -18,25 +19,46 @@ const DEFAULTS = {
 
     AR: {
         SCALE: 0.15,
-        POSITION: [0, 0.8, -0.7]
+        POSITION: isMobile() ? [0, 0.9, -0.55] : [0, 0.8, -0.7]
     },
 
     HANDLE_OFFSET_Y: 0.0055
 }
 
+/** COMMENTS RE: POINTER
+ * `cursorModel: false` ..hides glowing pointer for both hands and controller
+ * - somewhat subjective, but the pointers are visually "off" in many handle-grabbing ops. especially noticeable with ray-grabbing.
+ * - just set true or remove those lines in the future to test if positioning is fixed
+ */
 const xr_store = createXRStore({
     frameBufferScaling: 1.5, // higher visual quality on vr headsets. impacts performance.
     foveation: 1,
 
     hand: {
+        rayPointer: {
+            cursorModel: false
+        },
+
+        grabPointer: {
+            cursorModel: false
+        },
+
+        touchPointer: {
+            cursorModel: false
+        },
+
         model: {
-            // special technique allows hands to be rendered over 3d content
+            // technique allows hands to be rendered over 3d content
             colorWrite: false,
             renderOrder: -1
         }
     },
 
     controller: {
+        rayPointer: {
+            cursorModel: false
+        },
+
         model: {
             colorWrite: false,
             renderOrder: -1
@@ -136,8 +158,28 @@ const ContentAR = () => {
         }
     }, [])
 
-    // grabbing and placement
-    // https://pmndrs.github.io/xr/docs/handles/introduction
+    /** REACT-THREE/HANDLES
+     * https://pmndrs.github.io/xr/docs/handles/introduction
+     * - grab, move, rotate, scale objects in XR
+     *
+     *
+     * BUG "@react-three/handle": 6.6.8
+     *   - in this demo, the <Handle> is just a simple <boxGeometry> mesh with:
+     *     MOVE and ROTATION (Y-AXIS) only
+     *     HMD HEADSET + HAND-GRAB OPS
+     *
+     *   - note that HAND-RAY OPS seem ok
+     *   - <Handle> apply function is NOT related to this bug (commenting this out, but is present on just the <boxGeometry> handle)
+     *
+     *   OBSERVATION 1
+     *     - when grabbing the <Handle> with hands + moving/rotating, it's "touchy" and imprecise
+     *     - overall <Handle> movement becomes exaggerated based on
+     *       1) distance traveled
+     *       2) specific hand rotations while moving (difficult to explain. ex. hand "twist" really distort handle translation)
+     *
+     *   OBSERVATION 2
+     *     - modifying <Handle> for ONLY MOVEMENT or ONLY ROTATION - when individually tested these ops are VERY PRECISE
+     */
     return <>
         <group
             ref={refs.portal}
@@ -197,27 +239,25 @@ const Experience = () => <>
     </IfInSessionMode >
 </>
 
-const ExperienceXR = () => {
-    return <>
-        <DOMOverlay />
+const ExperienceXR = () => <>
+    <DOMOverlay xr_store={xr_store} />
 
-        <Canvas
-            flat
-            camera={{
-                fov: 45,
-                near: 0.1,
-                far: 50,
-                position: [1, 2, 6]
-            }}
-        >
-            <color args={['#030202']} attach="background" />
+    <Canvas
+        flat
+        camera={{
+            fov: 45,
+            near: 0.1,
+            far: 50,
+            position: [1, 2, 6]
+        }}
+    >
+        <color args={['#030202']} attach="background" />
 
-            <XR store={xr_store}>
-                <XRCameraRestore />
-                <Experience />
-            </XR>
-        </Canvas>
-    </>
-}
+        <XR store={xr_store}>
+            <XRCameraRestore />
+            <Experience />
+        </XR>
+    </Canvas>
+</>
 
 export { ExperienceXR }

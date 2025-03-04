@@ -63,14 +63,23 @@ function closeDialog(dialog) {
 }
 
 // https://developers.meta.com/horizon/documentation/web/web-launch/
-function metaQuestWebLaunch(e) {
+function metaQuestWebLaunch() {
   let quest_url = new URL('https://oculus.com/open_url/')
   quest_url.searchParams.set('url', XR_URL)
-  window.open(quest_url, '_blank').focus()
+  window.open(quest_url).focus()
+}
+
+// similar strategy as meta quest web launch
+// https://play.eyejack.xyz/#home
+function appClipLaunch() {
+  let quest_url = new URL('https://play.eyejack.xyz/link/')
+  quest_url.searchParams.set('url', XR_URL)
+  window.open(quest_url, '_self')
 }
 
 export {
-  isMobile, isAppleMobile,
+  isMobile,
   openDialog, closeDialog,
+  isAppleMobile, appClipLaunch,
   isOculusUserAgent, metaQuestWebLaunch
 }
