@@ -5,11 +5,17 @@ import { createXRStore, IfInSessionMode, useXRControllerLocomotion, XR, XROrigin
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
+import { FirstFrame } from '../../32-coffee-smoke/src/components/FirstFrame.jsx'
 import { XRCameraRestore } from '../src/components/XRCameraRestore'
 import { isAppleMobile, isMobile } from './common/Utils.js'
 import { DOMOverlay } from './components/DOMOverlay.jsx'
 import portalFragmentShader from './shaders/portal/fragment.glsl'
 import portalVertexShader from './shaders/portal/vertex.glsl'
+
+const DEVICE = {
+    IS_MOBILE: isMobile(),
+    IS_APPLE_MOBILE: isAppleMobile()
+}
 
 const DEFAULTS = {
     VR: {
@@ -20,10 +26,10 @@ const DEFAULTS = {
     AR: {
         SCALE: 0.15,
 
-        POSITION: isAppleMobile() ?
+        POSITION: DEVICE.IS_APPLE_MOBILE ?
             [0, 1.4, -0.5] :
 
-            isMobile() ?
+            DEVICE.IS_MOBILE ?
                 [0, 0.9, -0.55] :
                 [0, 0.8, -0.7]
     },
@@ -158,7 +164,7 @@ const ContentAR = () => {
             // initial placement of the boxGeometry handle
             refs.handle.current.position.fromArray([
                 DEFAULTS.AR.POSITION[0],
-                DEFAULTS.AR.POSITION[1] - DEFAULTS.HANDLE_OFFSET_Y,
+                DEFAULTS.AR.POSITION[1],
                 DEFAULTS.AR.POSITION[2]
             ])
         }
@@ -187,33 +193,31 @@ const ContentAR = () => {
      *     - modifying <Handle> for ONLY MOVEMENT or ONLY ROTATION - when individually tested these ops are VERY PRECISE
      */
     return <>
-        <group
-            ref={refs.portal}
-            scale={DEFAULTS.AR.SCALE}
-            position={DEFAULTS.AR.POSITION}
-        >
-            <Portal
-                fireflies_scale={DEFAULTS.AR.SCALE}
-                ar_mode
+        {
+            !DEVICE.IS_MOBILE &&
+            <FirstFrame
+                onFirstFrame={camera => refs.handle?.current.position.setY(camera.position.y - 0.4)}
             />
-        </group>
+        }
 
         <HandleTarget ref={refs.handle}>
+            <group
+                ref={refs.portal}
+                scale={DEFAULTS.AR.SCALE}
+                position-y={DEFAULTS.HANDLE_OFFSET_Y}
+            >
+                <Portal
+                    fireflies_scale={DEFAULTS.AR.SCALE}
+                    ar_mode
+                />
+            </group>
+
             <Handle
                 targetRef={'from-context'}
                 scale={false}
                 translate={true}
                 rotate={'y'}
                 multitouch={true}
-
-                // move/rotate boxGeometry "handle" and copy to the portal scene
-                apply={(state, target) => {
-                    target.position.copy(state.current.position)
-                    refs.portal.current.position.copy(target.position)
-                    refs.portal.current.position.y += DEFAULTS.HANDLE_OFFSET_Y // maintain scene's vertical offset
-
-                    refs.portal.current.rotation.y = target.rotation.y = state.current.rotation.y
-                }}
             >
                 <mesh>
                     <boxGeometry args={[0.6, 0.01, 0.6]} />

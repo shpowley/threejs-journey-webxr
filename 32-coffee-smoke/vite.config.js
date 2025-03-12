@@ -14,14 +14,14 @@ export default {
         // Restart server on static/public file change
         restart({ restart: [ '../public/**', ] }),
 
-        // SSL support (needed for webxr)
-        basicSsl(),
-
         // React support
         react(),
 
         // GLSL support
         glsl(),
+
+        // SSL support (needed for webxr)
+        basicSsl(),
 
         // .js file support as if it was JSX
         {

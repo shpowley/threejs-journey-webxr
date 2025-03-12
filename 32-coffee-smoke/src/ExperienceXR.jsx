@@ -1,7 +1,8 @@
 import { OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { createXRStore, IfInSessionMode, XR } from '@react-three/xr'
-import { useRef } from 'react'
+import { useEffect, useRef } from 'react'
+import { Handle, HandleTarget } from '@react-three/handle'
 
 import { CoffeeSmoke } from './components/CoffeeSmoke'
 import { DOMOverlay } from './components/DOMOverlay'
@@ -10,7 +11,7 @@ import { XRCameraRestore } from './components/XRCameraRestore'
 
 const xr_store = createXRStore({
   offerSession: false,
-  frameBufferScaling: 2.0,
+  frameBufferScaling: 1.5,
   foveation: 1,
 
   hand: {
@@ -74,18 +75,44 @@ const ContentVR = () => {
 const ContentAR = () => {
   const refs = {
     coffee_scene: useRef(),
+    handle: useRef()
   }
 
-  return <>
-    <FirstFrame onFirstFrame={camera => adjustScenePosition(camera, refs.coffee_scene, -0.3)} />
+  useEffect(() => {
+    if (refs.handle.current) {
+      refs.handle.current.position.fromArray([0, 0.73, -0.6]) // SEATED POSITION (HMD)
+    }
+  }, [])
 
-    <group
-      ref={refs.coffee_scene}
-      scale={0.05}
-      position={[0, 0.85, -0.6]} // // SEATED POSITION (HMD)
-    >
-      <CoffeeSmoke />
-    </group>
+  return <>
+    <FirstFrame onFirstFrame={camera => adjustScenePosition(camera, refs.handle, -0.3)} />
+
+    <HandleTarget ref={refs.handle}>
+      <group
+        ref={refs.coffee_scene}
+        scale={0.05}
+        position={[0, 0.1165, 0]} // OFFSET FROM HANDLE
+      >
+        <CoffeeSmoke />
+      </group>
+
+      <Handle
+        targetRef={'from-context'}
+        scale={false}
+        translate={true}
+        rotate={'y'}
+        multitouch={true}
+      >
+        <mesh>
+          <boxGeometry args={[0.499, 0.049, 0.499]} />
+          <meshBasicMaterial
+            color={0xffffff}
+            opacity={0}
+            transparent
+          />
+        </mesh>
+      </Handle>
+    </HandleTarget>
   </>
 }
 
