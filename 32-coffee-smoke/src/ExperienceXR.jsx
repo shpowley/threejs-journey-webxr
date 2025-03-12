@@ -1,10 +1,11 @@
 import { OrbitControls } from '@react-three/drei'
-import { Canvas, useFrame, useThree } from '@react-three/fiber'
+import { Canvas } from '@react-three/fiber'
 import { createXRStore, IfInSessionMode, XR } from '@react-three/xr'
 import { useRef } from 'react'
 
 import { CoffeeSmoke } from './components/CoffeeSmoke'
 import { DOMOverlay } from './components/DOMOverlay'
+import { FirstFrame } from './components/FirstFrame'
 import { XRCameraRestore } from './components/XRCameraRestore'
 
 const xr_store = createXRStore({
@@ -45,18 +46,10 @@ const xr_store = createXRStore({
 })
 
 // ADJUST SCENE FOR OPTIMAL HEADSET HEIGHT ON FIRST FRAME (HACK)
-const FirstFrame = ({ ref_scene = null, height_offset = 0 }) => {
-  const camera = useThree(s => s.camera)
-  let first_frame_adjustment = true
-
-  useFrame(() => {
-    if (first_frame_adjustment && ref_scene.current) {
-      ref_scene.current.position.setY(camera.position.y + height_offset)
-      first_frame_adjustment = false
-    }
-  })
-
-  return null
+function adjustScenePosition(camera, ref_scene, height_offset = 0) {
+  if (ref_scene.current) {
+    ref_scene.current.position.setY(camera.position.y + height_offset)
+  }
 }
 
 const ContentVR = () => {
@@ -65,10 +58,7 @@ const ContentVR = () => {
   }
 
   return <>
-    <FirstFrame
-      ref_scene={refs.coffee_scene}
-      height_offset={-0.2}
-    />
+    <FirstFrame onFirstFrame={camera => adjustScenePosition(camera, refs.coffee_scene, -0.2)} />
 
     <group
       ref={refs.coffee_scene}
@@ -87,10 +77,7 @@ const ContentAR = () => {
   }
 
   return <>
-    <FirstFrame
-      ref_scene={refs.coffee_scene}
-      height_offset={-0.3}
-    />
+    <FirstFrame onFirstFrame={camera => adjustScenePosition(camera, refs.coffee_scene, -0.3)} />
 
     <group
       ref={refs.coffee_scene}
