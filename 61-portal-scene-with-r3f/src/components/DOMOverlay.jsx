@@ -42,7 +42,7 @@ const DOMOverlay = ({ xr_store }) => {
         {/* VR icon "ready player one" */}
         <img
             id='image_vr'
-            src='/ready.webp'
+            src='./overlay/ready.webp'
 
             onPointerDown={handlers.openModal}
         />
@@ -73,7 +73,7 @@ const DOMOverlay = ({ xr_store }) => {
                 >
                     <img
                         id='image_qr_share'
-                        src='/eyejack.webp'
+                        src='./overlay/eyejack.webp'
                     />
 
                     <div id='text_share'>

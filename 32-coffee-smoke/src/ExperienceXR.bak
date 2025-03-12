@@ -1,6 +1,6 @@
 import { OrbitControls } from '@react-three/drei'
 import { Canvas, useFrame, useThree } from '@react-three/fiber'
-import { createXRStore, IfInSessionMode, XR } from '@react-three/xr'
+import { createXRStore, DefaultXRController, IfInSessionMode, XR } from '@react-three/xr'
 import { useRef } from 'react'
 
 import { CoffeeSmoke } from './components/CoffeeSmoke'
@@ -8,7 +8,6 @@ import { DOMOverlay } from './components/DOMOverlay'
 import { XRCameraRestore } from './components/XRCameraRestore'
 
 const xr_store = createXRStore({
-  offerSession: false,
   frameBufferScaling: 2.0,
   foveation: 1,
 
@@ -44,41 +43,31 @@ const xr_store = createXRStore({
   }
 })
 
-// ADJUST SCENE FOR OPTIMAL HEADSET HEIGHT ON FIRST FRAME (HACK)
-const FirstFrame = ({ ref_scene = null, height_offset = 0 }) => {
-  const camera = useThree(s => s.camera)
-  let first_frame_adjustment = true
-
-  useFrame(() => {
-    if (first_frame_adjustment && ref_scene.current) {
-      ref_scene.current.position.setY(camera.position.y + height_offset)
-      first_frame_adjustment = false
-    }
-  })
-
-  return null
-}
-
 const ContentVR = () => {
   const refs = {
     coffee_scene: useRef(),
   }
 
-  return <>
-    <FirstFrame
-      ref_scene={refs.coffee_scene}
-      height_offset={-0.2}
-    />
+  const camera = useThree(s => s.camera)
 
-    <group
-      ref={refs.coffee_scene}
-      scale={0.05}
-      position={[0, 0.85, -0.65]} // SEATED POSITION (HMD)
-      rotation={[0, -Math.PI * 0.05, 0]}
-    >
-      <CoffeeSmoke />
-    </group>
-  </>
+  // ADJUST SCENE FOR OPTIMAL HEADSET HEIGHT
+  let first_frame_adjustment = true
+
+  useFrame(() => {
+    if (first_frame_adjustment) {
+      refs.coffee_scene.current.position.setY(camera.position.y - 0.2)
+      first_frame_adjustment = false
+    }
+  })
+
+  return <group
+    ref={refs.coffee_scene}
+    scale={0.05}
+    position={[0, 0.85, -0.65]} // INITIALLY ASSUMING WEARING A HEADSET IN A SEATED POSITION
+    rotation={[0, -Math.PI * 0.05, 0]}
+  >
+    <CoffeeSmoke />
+  </group>
 }
 
 const ContentAR = () => {
@@ -86,20 +75,25 @@ const ContentAR = () => {
     coffee_scene: useRef(),
   }
 
-  return <>
-    <FirstFrame
-      ref_scene={refs.coffee_scene}
-      height_offset={-0.3}
-    />
+  const camera = useThree(s => s.camera)
 
-    <group
-      ref={refs.coffee_scene}
-      scale={0.05}
-      position={[0, 0.85, -0.6]} // // SEATED POSITION (HMD)
-    >
-      <CoffeeSmoke />
-    </group>
-  </>
+  // ADJUST SCENE FOR OPTIMAL HEADSET HEIGHT
+  let first_frame_adjustment = true
+
+  useFrame(() => {
+    if (first_frame_adjustment) {
+      refs.coffee_scene.current.position.setY(camera.position.y - 0.3)
+      first_frame_adjustment = false
+    }
+  })
+
+  return <group
+    ref={refs.coffee_scene}
+    scale={0.05}
+    position={[0, 0.85, -0.6]} // INITIALLY ASSUMING WEARING A HEADSET IN A SEATED POSITION
+  >
+    <CoffeeSmoke />
+  </group>
 }
 
 const ExperienceXR = () => <>

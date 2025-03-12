@@ -8,19 +8,20 @@ export default {
     root: 'src/',
     publicDir: '../public/',
     base: './',
+
     plugins:
     [
         // Restart server on static/public file change
         restart({ restart: [ '../public/**', ] }),
+
+        // SSL support (needed for webxr)
+        basicSsl(),
 
         // React support
         react(),
 
         // GLSL support
         glsl(),
-
-        // SSL support (needed for webxr)
-        basicSsl(),
 
         // .js file support as if it was JSX
         {
@@ -37,11 +38,13 @@ export default {
             },
         },
     ],
+
     server:
     {
         host: true, // Open to local network and display URL
         open: true,
     },
+
     build:
     {
         outDir: '../dist', // Output in the dist/ folder

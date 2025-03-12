@@ -69,7 +69,7 @@ const xr_store = createXRStore({
             colorWrite: false,
             renderOrder: -1
         }
-    },
+    }
 })
 
 const PortalMaterial = shaderMaterial(
@@ -224,32 +224,12 @@ const ContentAR = () => {
     </>
 }
 
-const Experience = () => <>
-    {/* the 'original' non-xr scene */}
-    <IfInSessionMode deny={['immersive-ar', 'immersive-vr']}>
-        <OrbitControls makeDefault />
-
-        <Center>
-            <Portal />
-        </Center>
-    </IfInSessionMode>
-
-    {/* immersive vr - room scale */}
-    <IfInSessionMode allow={'immersive-vr'}>
-        <ContentVR />
-    </IfInSessionMode>
-
-    {/* mixed reality - toy scale */}
-    <IfInSessionMode allow={'immersive-ar'}>
-        <ContentAR />
-    </IfInSessionMode >
-</>
-
 const ExperienceXR = () => <>
     <DOMOverlay xr_store={xr_store} />
 
     <Canvas
         flat
+
         camera={{
             fov: 45,
             near: 0.1,
@@ -261,7 +241,25 @@ const ExperienceXR = () => <>
 
         <XR store={xr_store}>
             <XRCameraRestore />
-            <Experience />
+
+            {/* THE 'ORIGINAL' NON-XR SCENE */}
+            <IfInSessionMode deny={['immersive-ar', 'immersive-vr']}>
+                <OrbitControls makeDefault />
+
+                <Center>
+                    <Portal />
+                </Center>
+            </IfInSessionMode>
+
+            {/* IMMERSIVE VR - ROOM SCALE */}
+            <IfInSessionMode allow={'immersive-vr'}>
+                <ContentVR />
+            </IfInSessionMode>
+
+            {/* MIXED REALITY - TOY SCALE */}
+            <IfInSessionMode allow={'immersive-ar'}>
+                <ContentAR />
+            </IfInSessionMode >
         </XR>
     </Canvas>
 </>
