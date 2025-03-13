@@ -5,7 +5,7 @@ import { createXRStore, IfInSessionMode, useXRControllerLocomotion, XR, XROrigin
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
-import { FirstFrame } from '../../32-coffee-smoke/src/components/FirstFrame.jsx'
+import { FirstFrame } from './components/FirstFrame.jsx'
 import { XRCameraRestore } from '../src/components/XRCameraRestore'
 import { isAppleMobile, isMobile } from './common/Utils.js'
 import { DOMOverlay } from './components/DOMOverlay.jsx'
