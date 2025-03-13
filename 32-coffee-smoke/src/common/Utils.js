@@ -1,5 +1,5 @@
 const
-  XR_URL = 'https://threejs-journey-portal-webxr.vercel.app',
+  XR_URL = 'https://threejs-journey-coffee-webxr.vercel.app',
   USER_AGENT = navigator.userAgent.toLowerCase()
 
 function isMobileUserAgent() {

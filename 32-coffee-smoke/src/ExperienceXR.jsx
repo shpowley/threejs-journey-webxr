@@ -1,13 +1,39 @@
 import { OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
+import { Handle, HandleTarget } from '@react-three/handle'
 import { createXRStore, IfInSessionMode, XR } from '@react-three/xr'
 import { useEffect, useRef } from 'react'
-import { Handle, HandleTarget } from '@react-three/handle'
 
+import { isAppleMobile, isMobile } from './common/Utils'
 import { CoffeeSmoke } from './components/CoffeeSmoke'
 import { DOMOverlay } from './components/DOMOverlay'
 import { FirstFrame } from './components/FirstFrame'
 import { XRCameraRestore } from './components/XRCameraRestore'
+
+const DEVICE = {
+  IS_MOBILE: isMobile(),
+  IS_APPLE_MOBILE: isAppleMobile()
+}
+
+const DEFAULTS = {
+  VR: {
+    SCALE: 0.05,
+    POSITION: [0, 0.8, -0.65],
+  },
+
+  AR: {
+    SCALE: 0.05,
+
+    POSITION: DEVICE.IS_APPLE_MOBILE ?
+      [0, 1.4, -0.5] :
+
+      DEVICE.IS_MOBILE ?
+        [0, 0.9, -0.55] :
+        [0, 0.85, -0.7]
+  },
+
+  HANDLE_OFFSET_Y: 0.1165
+}
 
 const xr_store = createXRStore({
   offerSession: false,
@@ -48,27 +74,51 @@ const xr_store = createXRStore({
 
 // ADJUST SCENE FOR OPTIMAL HEADSET HEIGHT ON FIRST FRAME (HACK)
 function adjustScenePosition(camera, ref_scene, height_offset = 0) {
-  if (ref_scene.current) {
-    ref_scene.current.position.setY(camera.position.y + height_offset)
-  }
+  ref_scene?.current.position.setY(camera.position.y + height_offset)
 }
 
 const ContentVR = () => {
   const refs = {
     coffee_scene: useRef(),
+    handle: useRef()
   }
 
-  return <>
-    <FirstFrame onFirstFrame={camera => adjustScenePosition(camera, refs.coffee_scene, -0.2)} />
+  useEffect(() => {
+    if (refs.handle.current) {
+      refs.handle.current.position.fromArray(DEFAULTS.VR.POSITION)
+      refs.handle.current.rotation.set(0, -Math.PI * 0.1, 0)
+    }
+  }, [])
 
-    <group
-      ref={refs.coffee_scene}
-      scale={0.05}
-      position={[0, 0.85, -0.65]} // SEATED POSITION (HMD)
-      rotation={[0, -Math.PI * 0.05, 0]}
-    >
-      <CoffeeSmoke />
-    </group>
+  return <>
+    <FirstFrame onFirstFrame={camera => adjustScenePosition(camera, refs.handle, -0.2)} />
+
+    <HandleTarget ref={refs.handle}>
+      <group
+        ref={refs.coffee_scene}
+        scale={DEFAULTS.VR.SCALE}
+        position-y={DEFAULTS.HANDLE_OFFSET_Y}
+      >
+        <CoffeeSmoke />
+      </group>
+
+      <Handle
+        targetRef={'from-context'}
+        scale={false}
+        translate={true}
+        rotate={'y'}
+        multitouch={true}
+      >
+        <mesh>
+          <boxGeometry args={[0.499, 0.049, 0.499]} />
+          <meshBasicMaterial
+            color={0xffffff}
+            opacity={0}
+            transparent
+          />
+        </mesh>
+      </Handle>
+    </HandleTarget>
   </>
 }
 
@@ -79,19 +129,16 @@ const ContentAR = () => {
   }
 
   useEffect(() => {
-    if (refs.handle.current) {
-      refs.handle.current.position.fromArray([0, 0.73, -0.6]) // SEATED POSITION (HMD)
-    }
+    // initial placement of the "handle"
+    refs.handle?.current.position.fromArray(DEFAULTS.AR.POSITION)
   }, [])
 
   return <>
-    <FirstFrame onFirstFrame={camera => adjustScenePosition(camera, refs.handle, -0.3)} />
-
     <HandleTarget ref={refs.handle}>
       <group
         ref={refs.coffee_scene}
-        scale={0.05}
-        position={[0, 0.1165, 0]} // OFFSET FROM HANDLE
+        scale={DEFAULTS.AR.SCALE}
+        position-y={DEFAULTS.HANDLE_OFFSET_Y}
       >
         <CoffeeSmoke />
       </group>
@@ -139,7 +186,7 @@ const ExperienceXR = () => <>
         <OrbitControls
           target={[0, 0.9, 0]}
           autoRotate={true}
-          autoRotateSpeed={0.2}
+          autoRotateSpeed={0.1}
         />
 
         <CoffeeSmoke />

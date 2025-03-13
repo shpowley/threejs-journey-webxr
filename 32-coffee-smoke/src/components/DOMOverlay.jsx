@@ -35,8 +35,8 @@ const DOMOverlay = ({ xr_store }) => {
   return <>
     {/* scene title info */}
     <div id='title'>
-      Coffee Smoke<br />
-      <a href='https://threejs-journey.com'>three.js journey</a>
+      Coffee Smoke (VR)<br />
+      <a href='https://threejs-journey.com'>threejs-journey.com</a>
     </div>
 
     {/* VR icon "ready player one" */}
