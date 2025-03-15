@@ -1,15 +1,8 @@
-import { effect, signal } from '@preact/signals-react'
+import { effect } from '@preact/signals-react'
 import { useEffect } from 'react'
 import { Pane } from 'tweakpane'
 
-// https://preactjs.com/guide/v10/signals/
-// "reactive primitives for managing application state"
-const SIGNALS = {
-  clear_color: signal('#160920'),
-  color_A: signal('#ff7300'),
-  color_B: signal('#0092ff'),
-  progress: signal(0)
-}
+import { SIGNALS } from '../common/params'
 
 const BUTTONS = {
   DONUT: 1,
@@ -85,4 +78,4 @@ const TweakPaneControls = ({ onButtonClick }) => {
   return null
 }
 
-export { SIGNALS, BUTTONS, TweakPaneControls }
+export { BUTTONS, SIGNALS, TweakPaneControls }
