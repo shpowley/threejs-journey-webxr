@@ -35,7 +35,7 @@ const DOMOverlay = ({ store }) => {
   return <>
     {/* scene title info */}
     <div id='title'>
-      Coffee Smoke (VR)<br />
+      Particles Morphing (VR)<br />
       <a href='https://threejs-journey.com'>threejs-journey.com</a>
     </div>
 

@@ -164,7 +164,7 @@ const ContentAR = () => {
 }
 
 const ExperienceXR = () => <>
-  <DOMOverlay xr_store={xr_store} />
+  <DOMOverlay store={xr_store} />
 
   <Canvas
     flat

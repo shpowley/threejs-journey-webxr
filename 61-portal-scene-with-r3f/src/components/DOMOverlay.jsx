@@ -10,7 +10,7 @@ import {
   openDialog
 } from '../common/utils'
 
-const DOMOverlay = ({ xr_store }) => {
+const DOMOverlay = ({ store }) => {
   const refs = {
     modal_vr: useRef(),
     div_info: useRef(),
@@ -121,7 +121,7 @@ const DOMOverlay = ({ xr_store }) => {
             <button
               title='launch immersive-VR'
               className='class_button_color'
-              onClick={() => xr_store?.enterVR()}
+              onClick={() => store?.enterVR()}
             >
               VR
             </button>
@@ -132,7 +132,7 @@ const DOMOverlay = ({ xr_store }) => {
               <button
                 title='launch mixed-reality'
                 className='class_button_color'
-                onClick={() => xr_store?.enterAR()}
+                onClick={() => store?.enterAR()}
               >
                 AR
               </button> :

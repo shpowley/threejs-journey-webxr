@@ -12,10 +12,12 @@ const BUTTONS = {
   THREEJS: 3
 }
 
-// https://tweakpane.github.io/docs/ (stand in for leva)
+// https://tweakpane.github.io/docs/ (replacement for leva)
 const TweakPaneControls = ({ onButtonClick }) => {
   useEffect(() => {
     const pane = new Pane({ title: 'CONTROLS', expanded: false })
+    // https://tweakpane.github.io/docs/api/interfaces/_internal_.PaneConfig.html#container
+    // - maybe for container positioning?
 
     // clear color
     pane

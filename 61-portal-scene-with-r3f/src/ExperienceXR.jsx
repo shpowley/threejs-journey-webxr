@@ -44,6 +44,7 @@ const DEFAULTS = {
  * - just set true or remove those lines in the future to test if positioning is fixed
  */
 const xr_store = createXRStore({
+  offerSession: false,
   frameBufferScaling: 1.5, // higher visual quality on vr headsets. impacts performance.
   foveation: 1,
 
@@ -226,7 +227,7 @@ const ContentAR = () => {
 }
 
 const ExperienceXR = () => <>
-  <DOMOverlay xr_store={xr_store} />
+  <DOMOverlay store={xr_store} />
 
   <Canvas
     flat

@@ -14,9 +14,9 @@ const ParticlesMorph = ({ ref }) => {
   const particles = {
     animation: useRef(),
     geometry: useRef(),
-    index: useRef(0),
     material: useRef(),
-    positions: useRef(),
+    positions: useRef()
+    // NOTE - using preact/signals to store active model index to maintain active model when switching from non-xr to xr modes
   }
 
   const { scene } = useGLTF('./models.glb')
@@ -28,10 +28,10 @@ const ParticlesMorph = ({ ref }) => {
     ), []),
 
     particleMorph: useCallback(index => {
-      if (index === particles.index.current) return
+      if (index === SIGNALS.index.value) return
 
       // update attributes
-      particles.geometry.current.attributes.position = particles.positions.current[particles.index.current]
+      particles.geometry.current.attributes.position = particles.positions.current[SIGNALS.index.value]
       particles.geometry.current.attributes.aPositionTarget = particles.positions.current[index]
 
       // animate progress
@@ -45,7 +45,7 @@ const ParticlesMorph = ({ ref }) => {
       })
 
       // save index
-      particles.index.current = index
+      SIGNALS.index.value = index
     }, [])
   }
 
@@ -93,7 +93,7 @@ const ParticlesMorph = ({ ref }) => {
     for (let i = 0; i < max_particles; i++)
       sizes_array[i] = Math.random()
 
-    particles.geometry.current.setAttribute('position', particles.positions.current[particles.index.current])
+    particles.geometry.current.setAttribute('position', particles.positions.current[SIGNALS.index.value])
     particles.geometry.current.setAttribute('aPositionTarget', particles.positions.current[3])
     particles.geometry.current.setAttribute('aSize', new THREE.BufferAttribute(sizes_array, 1))
   }, [scene])
