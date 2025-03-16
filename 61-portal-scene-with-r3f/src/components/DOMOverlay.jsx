@@ -8,7 +8,7 @@ import {
   isOculusUserAgent,
   metaQuestWebLaunch,
   openDialog
-} from '../common/Utils'
+} from '../common/utils'
 
 const DOMOverlay = ({ xr_store }) => {
   const refs = {

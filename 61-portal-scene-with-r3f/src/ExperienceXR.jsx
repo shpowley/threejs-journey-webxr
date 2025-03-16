@@ -5,10 +5,11 @@ import { createXRStore, IfInSessionMode, useXRControllerLocomotion, XR, XROrigin
 import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
-import { FirstFrame } from './components/FirstFrame.jsx'
 import { XRCameraRestore } from '../src/components/XRCameraRestore'
-import { isAppleMobile, isMobile } from './common/Utils.js'
-import { DOMOverlay } from './components/DOMOverlay.jsx'
+import { isAppleMobile, isMobile } from './common/utils'
+import { DOMOverlay } from './components/DOMOverlay'
+import { FirstFrame } from './components/FirstFrame'
+
 import portalFragmentShader from './shaders/portal/fragment.glsl'
 import portalVertexShader from './shaders/portal/vertex.glsl'
 

@@ -4,17 +4,18 @@ import { Pane } from 'tweakpane'
 
 import { SIGNALS } from '../common/params'
 
+// need to match array indexes
 const BUTTONS = {
-  DONUT: 1,
-  SUZANNE: 2,
-  SPHERE: 3,
-  THREEJS: 4
+  DONUT: 0,
+  SUZANNE: 1,
+  SPHERE: 2,
+  THREEJS: 3
 }
 
 // https://tweakpane.github.io/docs/ (stand in for leva)
 const TweakPaneControls = ({ onButtonClick }) => {
   useEffect(() => {
-    const pane = new Pane({ title: 'CONTROLS' })
+    const pane = new Pane({ title: 'CONTROLS', expanded: false })
 
     // clear color
     pane
@@ -38,7 +39,7 @@ const TweakPaneControls = ({ onButtonClick }) => {
       })
       .on('change', e => SIGNALS.progress.value = e.value)
 
-    effect(() => progress_binding.value = SIGNALS.progress.value)
+    const disposeSignal = effect(() => progress_binding.value = SIGNALS.progress.value)
 
     pane.addBlade({ view: 'separator' })
 
@@ -72,6 +73,7 @@ const TweakPaneControls = ({ onButtonClick }) => {
 
     return () => {
       pane.dispose()
+      disposeSignal()
     }
   }, [onButtonClick])
 

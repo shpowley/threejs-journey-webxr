@@ -4,7 +4,7 @@ import { Handle, HandleTarget } from '@react-three/handle'
 import { createXRStore, IfInSessionMode, XR } from '@react-three/xr'
 import { useEffect, useRef } from 'react'
 
-import { isAppleMobile, isMobile } from './common/Utils'
+import { isAppleMobile, isMobile } from './common/utils'
 import { CoffeeSmoke } from './components/CoffeeSmoke'
 import { DOMOverlay } from './components/DOMOverlay'
 import { FirstFrame } from './components/FirstFrame'
