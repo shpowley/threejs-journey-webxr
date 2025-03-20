@@ -7,7 +7,7 @@ import { BUTTONS } from './TweakPaneControls'
 
 const BUTTON = {
   HEIGHT: 80,
-  WIDTH: 160
+  WIDTH: 148
 }
 
 const XRButton = ({ text, positionType = 'relative', positionBottom, backgroundColor = 0x67b0ff, onClick }) => <Button
@@ -18,10 +18,10 @@ const XRButton = ({ text, positionType = 'relative', positionBottom, backgroundC
   hover={{ backgroundColor: 0x5ee07b }}
   height={BUTTON.HEIGHT}
   width={BUTTON.WIDTH}
-  onClick={onClick}
+  onPointerDown={onClick}
 >
   <Text
-    fontSize={24}
+    fontSize={28}
     children={text}
   />
 </Button>
@@ -48,12 +48,12 @@ const Mobile = ({ onButtonClick }) => {
         variant='ghost'
         aspectRatio={1}
         backgroundOpacity={0.5}
-        height={30}
+        height={26}
         padding={0}
         positionType='absolute'
-        positionLeft={0}
-        positionTop={DEVICE.isAppleMobile() ? 10 : 0}
-        onClick={() => xr_store.getState().session.end()}
+        positionLeft={DEVICE.isAppleMobile() ?  0 : 10}
+        positionTop={10}
+        onPointerDown={() => xr_store.getState().session.end()}
       >
         <Svg
           src='./overlay/close_small.svg'
@@ -62,6 +62,7 @@ const Mobile = ({ onButtonClick }) => {
           hover={{ transformScale: 1.3 }}
         />
       </Button>
+
       <Container
         positionType='absolute'
         positionBottom={0}
@@ -76,7 +77,7 @@ const Mobile = ({ onButtonClick }) => {
           justifyContent='center'
           height={BUTTON.HEIGHT + 10}
           width={BUTTON.WIDTH * 4 * 1.2}
-          gapColumn={18}
+          gapColumn={22}
         >
           <XRButton text='donut' onClick={() => onButtonClick && typeof onButtonClick === 'function' && onButtonClick(BUTTONS.DONUT)} />
           <XRButton text='suzanne' onClick={() => onButtonClick && typeof onButtonClick === 'function' && onButtonClick(BUTTONS.SUZANNE)} />

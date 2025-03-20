@@ -1,7 +1,7 @@
 import { OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
 import { Handle, HandleTarget } from '@react-three/handle'
-import { createXRStore, IfInSessionMode, XR, XROrigin } from '@react-three/xr'
+import { createXRStore, IfInSessionMode, noEvents, PointerEvents, XR, XROrigin } from '@react-three/xr'
 import { useEffect, useRef } from 'react'
 
 import { PIXEL_RATIO } from './common/params'
@@ -193,8 +193,11 @@ const ExperienceXR = () => {
         pixelRatio: PIXEL_RATIO,
         antialias: true
       }}
+
+      events={noEvents}
     >
       <XR store={xr_store}>
+        <PointerEvents />
         <ClearColor />
         <XRCameraRestore />
 
