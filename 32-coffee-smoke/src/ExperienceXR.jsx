@@ -4,16 +4,11 @@ import { Handle, HandleTarget } from '@react-three/handle'
 import { createXRStore, IfInSessionMode, XR } from '@react-three/xr'
 import { useEffect, useRef } from 'react'
 
-import { isAppleMobile, isMobile } from './common/utils'
+import { DEVICE } from './common/utils'
 import { CoffeeSmoke } from './components/CoffeeSmoke'
 import { DOMOverlay } from './components/DOMOverlay'
 import { FirstFrame } from './components/FirstFrame'
 import { XRCameraRestore } from './components/XRCameraRestore'
-
-const DEVICE = {
-  IS_MOBILE: isMobile(),
-  IS_APPLE_MOBILE: isAppleMobile()
-}
 
 const DEFAULTS = {
   VR: {
@@ -24,10 +19,10 @@ const DEFAULTS = {
   AR: {
     SCALE: 0.05,
 
-    POSITION: DEVICE.IS_APPLE_MOBILE ?
+    POSITION: DEVICE.isAppleMobile() ?
       [0, 1.4, -0.5] :
 
-      DEVICE.IS_MOBILE ?
+      DEVICE.isMobile() ?
         [0, 0.9, -0.55] :
         [0, 0.85, -0.7]
   },
@@ -144,10 +139,10 @@ const ContentAR = () => {
       </group>
 
       <Handle
-        targetRef={'from-context'}
+        targetRef='from-context'
         scale={false}
         translate={true}
-        rotate={'y'}
+        rotate='y'
         multitouch={true}
       >
         <mesh>

@@ -1,6 +1,7 @@
 import { effect } from '@preact/signals-react'
 import { useGLTF } from '@react-three/drei'
-import anime from 'animejs'
+import { useFrame } from '@react-three/fiber'
+import { Tween } from '@tweenjs/tween.js'
 import { useCallback, useEffect, useImperativeHandle, useRef } from 'react'
 import * as THREE from 'three'
 
@@ -10,50 +11,59 @@ import { ResizeListener } from './ResizeListener'
 import particlesFragmentShader from '../shaders/particles/fragment.glsl'
 import particlesVertexShader from '../shaders/particles/vertex.glsl'
 
-const ParticlesMorph = ({ ref }) => {
+const ParticlesMorph = ({ ref, scale = 1 }) => {
+  const refs = {
+    tween_morph: useRef(new Tween(SIGNALS.progress).to({ value: 1 }, 3000))
+  }
+
   const particles = {
     animation: useRef(),
     geometry: useRef(),
     material: useRef(),
     positions: useRef()
-    // NOTE - using preact/signals to store active model index to maintain active model when switching from non-xr to xr modes
+
+    // NOTE: instead of storing active model index here,
+    // using preact/signals to maintain active model when switching from non-xr to xr modes
   }
 
   const { scene } = useGLTF('./models.glb')
 
   const handlers = {
-    resize: useCallback(() => particles.material.current.uniforms.uResolution.value.set(
+    resize: useCallback(() => particles.material.current?.uniforms.uResolution.value.set(
       window.innerWidth * PIXEL_RATIO,
       window.innerHeight * PIXEL_RATIO
     ), []),
 
     particleMorph: useCallback(index => {
-      if (index === SIGNALS.index.value) return
+      if (
+        index === SIGNALS.index.value ||
+        !refs.tween_morph.current ||
+        refs.tween_morph.current.isPlaying() ||
+        !particles.geometry.current ||
+        !particles.positions.current
+      )
+        return
+
+      refs.tween_morph.current.stop()
 
       // update attributes
       particles.geometry.current.attributes.position = particles.positions.current[SIGNALS.index.value]
       particles.geometry.current.attributes.aPositionTarget = particles.positions.current[index]
+      particles.geometry.current.attributes.position.needsUpdate = true
+      particles.geometry.current.attributes.aPositionTarget.needsUpdate = true
 
       // animate progress
-      particles.material.current.uniforms.uProgress.value = SIGNALS.progress.value = 0
-
-      particles.animation = anime({
-        targets: [SIGNALS.progress, particles.material.current.uniforms.uProgress],
-        value: 1,
-        duration: 3000,
-        easing: 'linear'
-      })
+      SIGNALS.progress.value = 0
+      refs.tween_morph.current.start()
 
       // save index
       SIGNALS.index.value = index
     }, [])
   }
 
-  useImperativeHandle(ref, () => {
-    return {
-      particleMorph: handlers.particleMorph
-    }
-  }, [])
+  useImperativeHandle(ref, () => ({
+    particleMorph: handlers.particleMorph
+  }), [])
 
   useEffect(() => {
     particles.positions.current = []
@@ -91,23 +101,36 @@ const ParticlesMorph = ({ ref }) => {
     const sizes_array = new Float32Array(max_particles)
 
     for (let i = 0; i < max_particles; i++)
-      sizes_array[i] = Math.random()
+      sizes_array[i] = Math.random() * scale
+
+    SIGNALS.progress.value = 0 // reset initial progress state (for switching between non-XR => XR => non-XR)
 
     particles.geometry.current.setAttribute('position', particles.positions.current[SIGNALS.index.value])
     particles.geometry.current.setAttribute('aPositionTarget', particles.positions.current[3])
     particles.geometry.current.setAttribute('aSize', new THREE.BufferAttribute(sizes_array, 1))
-  }, [scene])
+  }, [scene, scale])
 
   useEffect(() => {
-    const disposeSignal = effect(() => {
+    const effectProgress = effect(() => {
+      particles.material.current.uniforms.uProgress.value = SIGNALS.progress.value
+    })
+
+    const effectColors = effect(() => {
       particles.material.current.uniforms.uColorA.value.set(SIGNALS.color_A.value)
       particles.material.current.uniforms.uColorB.value.set(SIGNALS.color_B.value)
     })
 
     return () => {
-      disposeSignal()
+      effectProgress()
+      effectColors()
+
+      refs.tween_morph?.current.stop()
     }
   }, [])
+
+  useFrame(() => {
+    refs.tween_morph?.current.update()
+  })
 
   return <>
     <ResizeListener onResize={handlers.resize} />

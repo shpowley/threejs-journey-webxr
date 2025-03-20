@@ -15,7 +15,11 @@ const BUTTONS = {
 // https://tweakpane.github.io/docs/ (replacement for leva)
 const TweakPaneControls = ({ onButtonClick }) => {
   useEffect(() => {
-    const pane = new Pane({ title: 'CONTROLS', expanded: false })
+    const pane = new Pane({
+      title: 'CONTROLS',
+      expanded: false,
+      container: document.getElementById('tweakpane_container')
+    })
     // https://tweakpane.github.io/docs/api/interfaces/_internal_.PaneConfig.html#container
     // - maybe for container positioning?
 

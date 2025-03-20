@@ -1,15 +1,17 @@
 import { OrbitControls } from '@react-three/drei'
 import { Canvas } from '@react-three/fiber'
-import { createXRStore, IfInSessionMode, XR } from '@react-three/xr'
-import { useRef } from 'react'
+import { Handle, HandleTarget } from '@react-three/handle'
+import { createXRStore, IfInSessionMode, XR, XROrigin } from '@react-three/xr'
+import { useEffect, useRef } from 'react'
 
 import { PIXEL_RATIO } from './common/params'
-import { isMobile } from './common/utils'
+import { DEVICE } from './common/utils'
 import { ClearColor } from './components/ClearColor'
 import { DOMOverlay } from './components/DOMOverlay'
 import { ParticlesMorph } from './components/ParticlesMorph'
 import { TweakPaneControls } from './components/TweakPaneControls'
 import { XRCameraRestore } from './components/XRCameraRestore'
+import { XROverlay } from './components/XROverlay'
 
 const xr_store = createXRStore({
   offerSession: false,
@@ -48,19 +50,132 @@ const xr_store = createXRStore({
   }
 })
 
-const ContentAR = () => {
-  return <ParticlesMorph />
-}
-
-const ContentVR = () => {
-  return <ParticlesMorph />
-}
-
-const ExperienceXR = () => {
+const ContentNormal = () => {
   const refs = {
     particles: useRef()
   }
 
+  return <>
+    <TweakPaneControls onButtonClick={e => refs.particles?.current.particleMorph(e)} />
+    <OrbitControls />
+    <ParticlesMorph ref={refs.particles} />
+  </>
+}
+
+const ContentHMD = () => {
+  const DEFAULTS = {
+    SCALE: 0.1,
+    POSITION: [0, -2.0, 1.3]
+  }
+
+  const refs = {
+    particles: useRef(),
+    overlay: useRef()
+  }
+
+  useEffect(() => {
+    // initial placement of handle targets
+    refs.overlay?.current.position.set(0, -0.5, 0.45)
+  }, [])
+
+  return <>
+    <XROrigin position={DEFAULTS.POSITION} />
+
+    <HandleTarget ref={refs.overlay}>
+      <group>
+        <XROverlay onButtonClick={e => refs.particles?.current.particleMorph(e)} />
+
+        <Handle
+          targetRef='from-context'
+          scale={false}
+          translate={true}
+          rotate='y'
+        >
+          <mesh position={[0, 0.08, -0.006]}>
+            <planeGeometry args={[0.33, 0.115]} />
+            <meshBasicMaterial
+              color={0x000088}
+              transparent={true}
+              opacity={0.4}
+              depthTest={false}
+            />
+          </mesh>
+        </Handle>
+      </group>
+    </HandleTarget>
+
+    <HandleTarget>
+      <group scale={DEFAULTS.SCALE}>
+        <ParticlesMorph
+          ref={refs.particles}
+          scale={DEFAULTS.SCALE}
+        />
+
+        <Handle
+          targetRef='from-context'
+          scale={false}
+          translate={'as-rotate'}
+          rotate='y'
+        >
+          <mesh>
+            <boxGeometry args={[10, 5, 10]} />
+            <meshBasicMaterial
+              transparent={true}
+              opacity={0}
+            />
+          </mesh>
+        </Handle>
+      </group>
+    </HandleTarget>
+  </>
+}
+
+const ContentMobile = () => {
+  const DEFAULTS = {
+    SCALE: 0.1,
+
+    POSITION: DEVICE.isAppleMobile() ?
+      [0, -1.9, 1.5] :
+      [0, -1.4, 1.5]
+  }
+
+  const refs = {
+    particles: useRef(),
+    overlay: useRef()
+  }
+
+  return <>
+    <XROrigin position={DEFAULTS.POSITION} />
+
+    <XROverlay onButtonClick={e => refs.particles?.current.particleMorph(e)} />
+
+    <HandleTarget>
+      <group scale={DEFAULTS.SCALE}>
+        <ParticlesMorph
+          ref={refs.particles}
+          scale={DEFAULTS.SCALE}
+        />
+
+        <Handle
+          targetRef='from-context'
+          scale={false}
+          translate={true}
+          rotate='y'
+        >
+          <mesh>
+            <boxGeometry args={[10, 5, 10]} />
+            <meshBasicMaterial
+              transparent={true}
+              opacity={0}
+            />
+          </mesh>
+        </Handle>
+      </group>
+    </HandleTarget>
+  </>
+}
+
+const ExperienceXR = () => {
   return <>
     <DOMOverlay store={xr_store} />
 
@@ -71,7 +186,7 @@ const ExperienceXR = () => {
         fov: 35,
         near: 0.1,
         far: 100,
-        position: [0, 0, isMobile() ? 42 : 16]
+        position: [0, 0, DEVICE.isMobile() ? 30 : 16]
       }}
 
       gl={{
@@ -85,25 +200,16 @@ const ExperienceXR = () => {
 
         {/* THE 'ORIGINAL' NON-XR SCENE */}
         <IfInSessionMode deny={['immersive-ar', 'immersive-vr']}>
-          {/*
-            1 - MOVE TO ContentNormal
-            2 - RESIZE & POSITION AR/VR
-            3 - UIKIT FULLSCREEN MORPH BUTTONS
-            3 - HANDLES (TRIGGER = ROTATE, GRAB = MOVE ..?)
-            */}
-          <TweakPaneControls onButtonClick={e => refs.particles?.current.particleMorph(e)} />
-          <OrbitControls />
-          <ParticlesMorph ref={refs.particles} />
+          <ContentNormal />
         </IfInSessionMode>
 
-        {/* IMMERSIVE VR */}
-        <IfInSessionMode allow={'immersive-vr'}>
-          <ContentVR />
-        </IfInSessionMode>
-
-        {/* MIXED REALITY */}
-        <IfInSessionMode allow={'immersive-ar'}>
-          <ContentAR />
+        {/* EITHER AR OR VR */}
+        <IfInSessionMode allow={['immersive-ar', 'immersive-vr']}>
+          {
+            DEVICE.isMobile() ?
+              <ContentMobile /> :
+              <ContentHMD />
+          }
         </IfInSessionMode >
       </XR>
     </Canvas>

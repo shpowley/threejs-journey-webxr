@@ -1,11 +1,9 @@
 import { useCallback, useRef } from 'react'
 
 import {
+  DEVICE,
   appClipLaunch,
   closeDialog,
-  isAppleMobile,
-  isMobile,
-  isOculusUserAgent,
   metaQuestWebLaunch,
   openDialog
 } from '../common/utils'
@@ -117,7 +115,7 @@ const DOMOverlay = ({ store }) => {
         <div id='div_buttons'>
           {
             // disable vr mode on mobile (mobile vr is deprecated more or less, e.g. google cardboard)
-            !isMobile() && navigator?.xr?.isSessionSupported('immersive-vr') &&
+            !DEVICE.isMobile() && navigator?.xr?.isSessionSupported('immersive-vr') &&
             <button
               title='launch immersive-VR'
               className='class_button_color'
@@ -137,7 +135,7 @@ const DOMOverlay = ({ store }) => {
                 AR
               </button> :
 
-              isAppleMobile() &&
+              DEVICE.isAppleMobile() &&
               <button
                 id='button_eyejack'
                 title='eyejack app clip'
@@ -151,7 +149,7 @@ const DOMOverlay = ({ store }) => {
             // - don't show 'quest web launch' -- already here
             // - don't show qr code -- no way of sharing/scanning in headset
             // - don't show info button -- redundant. info already displayed
-            !isOculusUserAgent() &&
+            !DEVICE.isOculus() &&
             <>
               <button
                 id='button_quest'

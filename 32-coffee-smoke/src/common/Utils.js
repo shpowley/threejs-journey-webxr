@@ -2,28 +2,22 @@ const
   XR_URL = 'https://threejs-journey-coffee-webxr.vercel.app',
   USER_AGENT = navigator.userAgent.toLowerCase()
 
-function isMobileUserAgent() {
-  return /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/.test(USER_AGENT)
-}
+const DEVICE = {
+  isTouchDevice: () => 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0,
 
-function isAppleUserAgent() {
-  return /iphone|ipad/.test(USER_AGENT)
-}
+  isOculus: () => /oculusbrowser/.test(USER_AGENT),
 
-function isOculusUserAgent() {
-  return /oculusbrowser/.test(USER_AGENT)
-}
+  isAppleVisionPro: () => /ipad/.test(USER_AGENT) &&
+    navigator.maxTouchPoints === 0 &&
+    "xr" in navigator,
 
-function isTouchDevice() {
-  return 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0
-}
+  isMobile: () => /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/.test(USER_AGENT) && DEVICE.isTouchDevice(),
 
-function isMobile() {
-  return isMobileUserAgent() && isTouchDevice()
-}
+  isAppleMobile: () => /iphone|ipad/.test(USER_AGENT) && DEVICE.isTouchDevice(),
 
-function isAppleMobile() {
-  return isAppleUserAgent() && isTouchDevice()
+  isHeadset: () => DEVICE.isOculus() || DEVICE.isAppleVisionPro() || ("xr" in navigator),
+
+  isDesktop: () => !DEVICE.isMobile() && !DEVICE.isHeadset()
 }
 
 function openDialog(dialog) {
@@ -78,8 +72,7 @@ function appClipLaunch() {
 }
 
 export {
-  isMobile,
+  DEVICE,
   openDialog, closeDialog,
-  isAppleMobile, appClipLaunch,
-  isOculusUserAgent, metaQuestWebLaunch
+  appClipLaunch, metaQuestWebLaunch
 }

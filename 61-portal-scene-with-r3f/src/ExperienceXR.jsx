@@ -6,17 +6,12 @@ import { useEffect, useRef } from 'react'
 import * as THREE from 'three'
 
 import { XRCameraRestore } from '../src/components/XRCameraRestore'
-import { isAppleMobile, isMobile } from './common/utils'
+import { DEVICE } from './common/utils'
 import { DOMOverlay } from './components/DOMOverlay'
 import { FirstFrame } from './components/FirstFrame'
 
 import portalFragmentShader from './shaders/portal/fragment.glsl'
 import portalVertexShader from './shaders/portal/vertex.glsl'
-
-const DEVICE = {
-  IS_MOBILE: isMobile(),
-  IS_APPLE_MOBILE: isAppleMobile()
-}
 
 const DEFAULTS = {
   VR: {
@@ -27,10 +22,10 @@ const DEFAULTS = {
   AR: {
     SCALE: 0.15,
 
-    POSITION: DEVICE.IS_APPLE_MOBILE ?
+    POSITION: DEVICE.isAppleMobile() ?
       [0, 1.4, -0.5] :
 
-      DEVICE.IS_MOBILE ?
+      DEVICE.isMobile() ?
         [0, 0.9, -0.55] :
         [0, 0.8, -0.7]
   },
@@ -192,7 +187,7 @@ const ContentAR = () => {
    */
   return <>
     {
-      !DEVICE.IS_MOBILE &&
+      !DEVICE.isMobile() &&
       <FirstFrame
         onFirstFrame={camera => refs.handle?.current.position.setY(camera.position.y - 0.4)}
       />

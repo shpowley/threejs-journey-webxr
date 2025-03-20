@@ -1,11 +1,9 @@
 import { useCallback, useRef } from 'react'
 
 import {
+  DEVICE,
   appClipLaunch,
   closeDialog,
-  isAppleMobile,
-  isMobile,
-  isOculusUserAgent,
   metaQuestWebLaunch,
   openDialog
 } from '../common/utils'
@@ -33,6 +31,8 @@ const DOMOverlay = ({ store }) => {
   }
 
   return <>
+    <div id='tweakpane_container' />
+
     {/* scene title info */}
     <div id='title'>
       Particles Morphing (VR)<br />
@@ -107,8 +107,7 @@ const DOMOverlay = ({ store }) => {
           </p>
           <br />
           <p>
-            refactored for webxr<br />
-            sung powley <a href='https://bsky.app/profile/sung-powley.bsky.social'>bluesky</a>
+            <a href='https://bsky.app/profile/sung-powley.bsky.social'>@sung-powley.bsky.social</a>
           </p>
 
         </div>
@@ -117,7 +116,7 @@ const DOMOverlay = ({ store }) => {
         <div id='div_buttons'>
           {
             // disable vr mode on mobile (mobile vr is deprecated more or less, e.g. google cardboard)
-            !isMobile() && navigator?.xr?.isSessionSupported('immersive-vr') &&
+            !DEVICE.isMobile() && navigator?.xr?.isSessionSupported('immersive-vr') &&
             <button
               title='launch immersive-VR'
               className='class_button_color'
@@ -137,7 +136,7 @@ const DOMOverlay = ({ store }) => {
                 AR
               </button> :
 
-              isAppleMobile() &&
+              DEVICE.isAppleMobile() &&
               <button
                 id='button_eyejack'
                 title='eyejack app clip'
@@ -151,7 +150,7 @@ const DOMOverlay = ({ store }) => {
             // - don't show 'quest web launch' -- already here
             // - don't show qr code -- no way of sharing/scanning in headset
             // - don't show info button -- redundant. info already displayed
-            !isOculusUserAgent() &&
+            !DEVICE.isOculus() &&
             <>
               <button
                 id='button_quest'

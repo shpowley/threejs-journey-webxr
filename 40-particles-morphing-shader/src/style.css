@@ -6,6 +6,7 @@
 :root {
     --dialog-width: 600px;
     --dialog-height: 800px;
+    --spacing: 22px;
 }
 
 html,
@@ -157,8 +158,15 @@ a {
     vertical-align: middle;
 }
 
+#tweakpane_container {
+    position: absolute;
+    top: 90px;
+    left: 20px;
+    width: 264px;
+    z-index: 101;
+}
+
 #title {
-    --spacing: 22px;
     position: absolute;
     top: var(--spacing);
     left: var(--spacing);
@@ -226,6 +234,11 @@ div#dialog_vr {
         --spacing: 18px;
         --dialog-width: 320px;
         --dialog-height: 460px;
+    }
+
+    #tweakpane_container {
+        top: 80px;
+        left: 16px;
     }
 
     #title {
