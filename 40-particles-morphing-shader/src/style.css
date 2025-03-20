@@ -7,6 +7,7 @@
     --dialog-width: 600px;
     --dialog-height: 800px;
     --spacing: 22px;
+    --icon-spacing: 30px;
 }
 
 html,
@@ -80,7 +81,7 @@ a {
     border-radius: 10px;
 }
 
-#div_buttons button:active {
+#div_buttons button:active, #button_close:active, #image_menu:active, #image_fullscreen:active {
     transform: scale(1.2)
 }
 
@@ -111,17 +112,23 @@ a {
     background-size: 70%;
 }
 
-#image_vr {
-    --size: 60px;
+#image_menu, #image_fullscreen {
+    cursor: pointer;
     position: absolute;
     z-index: 102;
-    bottom: 40px;
-    left: calc(50% - var(--size) / 2);
+    --size: 54px;
     width: var(--size);
+    height: var(--size);
 }
 
-#image_vr:active {
-    transform: scale(1.2);
+#image_menu {
+    top: var(--icon-spacing);
+    right: var(--icon-spacing);
+}
+
+#image_fullscreen {
+    bottom: var(--icon-spacing);
+    right: var(--icon-spacing);
 }
 
 #div_qr_share, #div_info {
@@ -215,23 +222,15 @@ div#dialog_vr {
 
 /* fixes mobile hover */
 @media (min-height: 901px) {
-    #button_close:hover {
-        transform:scale(1.2)
-    }
-
-    #div_buttons button:hover {
+    #div_buttons button:hover, #button_close:hover, #image_menu:hover, #image_fullscreen:hover {
         transform: scale(1.2)
-    }
-
-    #image_vr:hover {
-        transform: scale(1.2);
-        cursor: pointer;
     }
 }
 
 @media (max-height: 900px) {
     :root {
         --spacing: 18px;
+        --icon-spacing: 18px;
         --dialog-width: 320px;
         --dialog-height: 460px;
     }
@@ -246,9 +245,14 @@ div#dialog_vr {
         line-height: 1.9rem;
     }
 
-    #image_vr {
-        --size: 46px;
-        bottom: 30px;
+    #image_menu, #image_fullscreen {
+        --size: 34px;
+    }
+
+    #image_fullscreen {
+        --offset: calc(var(--icon-spacing) + 8px);
+        bottom: var(--offset);
+        right: var(--offset);
     }
 
     #div_buttons {
@@ -260,8 +264,8 @@ div#dialog_vr {
     }
 
     #div_info {
-        top: 40px;
-        font-size: 1.15em;
+        top: 30px;
+        font-size: 1em;
     }
 
     #div_qr_share {
@@ -274,5 +278,23 @@ div#dialog_vr {
 
     #text_share {
         font-size: 1.2em;
+    }
+}
+
+@media (max-height: 900px) and (orientation: landscape) {
+    :root {
+        --dialog-height: 360px;
+    }
+
+    #div_qr_share {
+        top: 44px;
+    }
+
+    #image_qr_share {
+        width: 70%;
+    }
+
+    #div_buttons {
+        bottom: 1.2rem;
     }
 }

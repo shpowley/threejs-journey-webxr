@@ -64,8 +64,8 @@ const ContentNormal = () => {
 
 const ContentHMD = () => {
   const DEFAULTS = {
-    SCALE: 0.1,
-    POSITION: [0, -2.0, 1.3]
+    SCALE: 0.12,
+    POSITION: [0, -1.5, 1.3]
   }
 
   const refs = {
@@ -118,7 +118,7 @@ const ContentHMD = () => {
           rotate='y'
         >
           <mesh>
-            <boxGeometry args={[10, 5, 10]} />
+            <icosahedronGeometry args={[3, 0]} />
             <meshBasicMaterial
               transparent={true}
               opacity={0}

@@ -1,4 +1,4 @@
-import { Container, Fullscreen, Root, Text } from '@react-three/uikit'
+import { Container, Fullscreen, Root, Svg, Text } from '@react-three/uikit'
 import { Button } from '@react-three/uikit-default'
 import { useXRStore } from '@react-three/xr'
 
@@ -44,6 +44,24 @@ const Mobile = ({ onButtonClick }) => {
       width={window.innerWidth - MARGIN}
       height={window.innerHeight - MARGIN}
     >
+      <Button
+        variant='ghost'
+        aspectRatio={1}
+        backgroundOpacity={0.5}
+        height={30}
+        padding={0}
+        positionType='absolute'
+        positionLeft={0}
+        positionTop={0}
+        onClick={() => xr_store.getState().session.end()}
+      >
+        <Svg
+          src='./overlay/close_small.svg'
+          color={0xffffff}
+          height='100%'
+          hover={{ transformScale: 1.3 }}
+        />
+      </Button>
       <Container
         positionType='absolute'
         positionBottom={0}
@@ -53,7 +71,7 @@ const Mobile = ({ onButtonClick }) => {
       >
         <Container
           positionType='absolute'
-          positionBottom={120}
+          positionBottom={0}
           alignItems='center'
           justifyContent='center'
           height={BUTTON.HEIGHT + 10}
@@ -65,15 +83,6 @@ const Mobile = ({ onButtonClick }) => {
           <XRButton text='sphere' onClick={() => onButtonClick && typeof onButtonClick === 'function' && onButtonClick(BUTTONS.SPHERE)} />
           <XRButton text='three.js' onClick={() => onButtonClick && typeof onButtonClick === 'function' && onButtonClick(BUTTONS.THREEJS)} />
         </Container>
-
-        <XRButton
-          text={`exit session`}
-          backgroundColor={0xb5723c}
-          positionType='absolute'
-          positionBottom={0}
-
-          onClick={() => xr_store.getState().session.end()}
-        />
       </Container>
     </Container>
   </Fullscreen>

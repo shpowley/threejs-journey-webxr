@@ -20,7 +20,7 @@ const DEVICE = {
   isDesktop: () => !DEVICE.isMobile() && !DEVICE.isHeadset()
 }
 
-function openDialog(dialog) {
+const openDialog = dialog => {
   dialog.style.display = 'flex'
 
   dialog
@@ -39,7 +39,7 @@ function openDialog(dialog) {
     }
 }
 
-function closeDialog(dialog) {
+const closeDialog = dialog => {
   dialog
     .animate(
       [
@@ -57,7 +57,7 @@ function closeDialog(dialog) {
 }
 
 // https://developers.meta.com/horizon/documentation/web/web-launch/
-function metaQuestWebLaunch() {
+const metaQuestWebLaunch = () => {
   let quest_url = new URL('https://oculus.com/open_url/')
   quest_url.searchParams.set('url', XR_URL)
   window.open(quest_url).focus()
@@ -65,14 +65,38 @@ function metaQuestWebLaunch() {
 
 // similar strategy as meta quest web launch
 // https://play.eyejack.xyz/#home
-function appClipLaunch() {
+const appClipLaunch = () => {
   let quest_url = new URL('https://play.eyejack.xyz/link/')
   quest_url.searchParams.set('url', XR_URL)
   window.open(quest_url, '_self')
 }
 
+// DETECT FULLSCREEN TAKING INTO ACCOUNT CHROME DESKTOP (F11 KEY / "FULL SCREEN" MENU)
+// https://chatgpt.com/share/6772be20-e3c8-800f-a939-37b34d4dfe4d
+const WINDOW_MODE = {
+  NORMAL: 1,
+  FULLSCREEN_API: 2,
+  FULLSCREEN_BROWSER: 3
+}
+
+const getWindowMode = () => {
+  if (document.fullscreenElement !== null)
+    return WINDOW_MODE.FULLSCREEN_API
+  else if (window.innerHeight === screen.height && window.innerWidth === screen.width)
+    return WINDOW_MODE.FULLSCREEN_BROWSER
+  else
+    return WINDOW_MODE.NORMAL
+}
+
+const toggleFullscreen = () => {
+  getWindowMode() === WINDOW_MODE.FULLSCREEN_API ?
+    document.exitFullscreen() :
+    document.documentElement.requestFullscreen()
+}
+
 export {
   DEVICE,
   openDialog, closeDialog,
-  appClipLaunch, metaQuestWebLaunch
+  appClipLaunch, metaQuestWebLaunch,
+  WINDOW_MODE, getWindowMode, toggleFullscreen
 }
