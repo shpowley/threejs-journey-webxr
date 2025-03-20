@@ -32,7 +32,6 @@ const DOMOverlay = ({ store }) => {
   const handlers = {
     openModal: useCallback(() => {
       const is_headset = DEVICE.isHeadset()
-
       refs.div_info.current.style.display = is_headset ? 'block' : 'none'
       refs.div_qr.current.style.display = is_headset ? 'none' : 'block'
       openDialog(refs.modal_info.current)
@@ -66,13 +65,16 @@ const DOMOverlay = ({ store }) => {
     />
 
     {/* fullscreen */}
-    <img
-      ref={refs.fullscreen}
-      id='image_fullscreen'
-      title='fullscreen'
-      src={fullscreen_state === WINDOW_MODE.FULLSCREEN_API ? IMAGES.FULLSCREEN_EXIT : IMAGES.FULLSCREEN}
-      onClick={toggleFullscreen}
-    />
+    {
+      !DEVICE.isAppleMobile() &&
+      <img
+        ref={refs.fullscreen}
+        id='image_fullscreen'
+        title='fullscreen'
+        src={fullscreen_state === WINDOW_MODE.FULLSCREEN_API ? IMAGES.FULLSCREEN_EXIT : IMAGES.FULLSCREEN}
+        onClick={toggleFullscreen}
+      />
+    }
 
     {/* modal overlay */}
     <div

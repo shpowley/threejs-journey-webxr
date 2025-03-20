@@ -29,10 +29,12 @@ const ParticlesMorph = ({ ref, scale = 1 }) => {
   const { scene } = useGLTF('./models.glb')
 
   const handlers = {
-    resize: useCallback(() => particles.material.current?.uniforms.uResolution.value.set(
-      window.innerWidth * PIXEL_RATIO,
-      window.innerHeight * PIXEL_RATIO
-    ), []),
+    resize: useCallback(() => {
+      particles.material.current?.uniforms.uResolution.value.set(
+        window.innerWidth * PIXEL_RATIO,
+        window.innerHeight * PIXEL_RATIO
+      )
+    }, []),
 
     particleMorph: useCallback(index => {
       if (

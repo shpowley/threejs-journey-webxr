@@ -18,8 +18,7 @@ const XRButton = ({ text, positionType = 'relative', positionBottom, backgroundC
   hover={{ backgroundColor: 0x5ee07b }}
   height={BUTTON.HEIGHT}
   width={BUTTON.WIDTH}
-
-  onPointerDown={onClick}
+  onClick={onClick}
 >
   <Text
     fontSize={24}
@@ -37,6 +36,7 @@ const Mobile = ({ onButtonClick }) => {
     pointerEvents='listener'
     alignItems='center'
     justifyContent='center'
+    depthTest={false}
   >
     <Container
       alignItems='center'
@@ -52,7 +52,7 @@ const Mobile = ({ onButtonClick }) => {
         padding={0}
         positionType='absolute'
         positionLeft={0}
-        positionTop={0}
+        positionTop={DEVICE.isAppleMobile() ? 10 : 0}
         onClick={() => xr_store.getState().session.end()}
       >
         <Svg
@@ -117,7 +117,6 @@ const HMD = ({ onButtonClick }) => {
       backgroundColor={0xb5723c}
       positionType='absolute'
       positionBottom={80}
-
       onClick={() => xr_store.getState().session.end()}
     />
   </Root>

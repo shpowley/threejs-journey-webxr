@@ -1,6 +1,7 @@
 const
   XR_URL = 'https://threejs-journey-morph-webxr.vercel.app',
-  USER_AGENT = navigator.userAgent.toLowerCase()
+  USER_AGENT = navigator.userAgent.toLowerCase(),
+  URL_PARAMS = new URLSearchParams(window.location.search)
 
 const DEVICE = {
   isTouchDevice: () => 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0,
@@ -15,9 +16,11 @@ const DEVICE = {
 
   isAppleMobile: () => /iphone|ipad/.test(USER_AGENT) && DEVICE.isTouchDevice(),
 
-  isHeadset: () => DEVICE.isOculus() || DEVICE.isAppleVisionPro() || ("xr" in navigator),
+  isHeadset: () => DEVICE.isOculus() || DEVICE.isAppleVisionPro(),
 
-  isDesktop: () => !DEVICE.isMobile() && !DEVICE.isHeadset()
+  isDesktop: () => !DEVICE.isMobile() && !DEVICE.isHeadset(),
+
+  isXR: () => ("xr" in navigator)
 }
 
 const openDialog = dialog => {

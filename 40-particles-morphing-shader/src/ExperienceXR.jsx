@@ -132,7 +132,7 @@ const ContentHMD = () => {
 
 const ContentMobile = () => {
   const DEFAULTS = {
-    SCALE: 0.1,
+    SCALE: 0.12,
 
     POSITION: DEVICE.isAppleMobile() ?
       [0, -1.9, 1.5] :
