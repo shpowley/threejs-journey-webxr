@@ -1,0 +1,40 @@
+* {
+  --xr-close: 60px;
+  --xr-button-height: 50px;
+  --xr-button-width: 80px;
+}
+
+#image_xr_close {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: var(--xr-close);
+  height: var(--xr-close);
+}
+
+#div_xr_buttons {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  display: flex;
+  align-items: flex-end;
+  flex-direction: column;
+  gap: 20px;
+}
+
+#div_xr_buttons button {
+  border: none;
+  color: black;
+  background-color: #678cb4;
+  box-shadow: #000000a0 -2px 2px 2px;
+  width: var(--xr-button-width);
+  height: var(--xr-button-height);
+  font-size: 1.0rem;
+  padding: 0;
+  border-radius: 10px;
+}
+
+#div_xr_buttons button:active,
+#image_xr_close:active {
+  transform: scale(1.2)
+}

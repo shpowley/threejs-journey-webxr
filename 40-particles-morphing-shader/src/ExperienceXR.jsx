@@ -133,10 +133,8 @@ const ContentHMD = () => {
 const ContentMobile = () => {
   const DEFAULTS = {
     SCALE: 0.12,
-
-    POSITION: DEVICE.isAppleMobile() ?
-      [0, -1.9, 1.5] :
-      [0, -1.4, 1.5]
+    PARTICLE_SCALE: DEVICE.isAppleMobile() ? 0.04 : 0.09,
+    POSITION: [0, -1.4, 1.5]
   }
 
   const refs = {
@@ -153,7 +151,7 @@ const ContentMobile = () => {
       <group scale={DEFAULTS.SCALE}>
         <ParticlesMorph
           ref={refs.particles}
-          scale={DEFAULTS.SCALE}
+          scale={DEFAULTS.PARTICLE_SCALE}
         />
 
         <Handle

@@ -1,9 +1,11 @@
-import { Container, Fullscreen, Root, Svg, Text } from '@react-three/uikit'
+import { Container, Root, Text } from '@react-three/uikit'
 import { Button } from '@react-three/uikit-default'
-import { useXRStore } from '@react-three/xr'
+import { useXRStore, XRDomOverlay } from '@react-three/xr'
 
 import { DEVICE } from '../common/utils'
 import { BUTTONS } from './TweakPaneControls'
+
+import './xroverlay.css'
 
 const BUTTON = {
   HEIGHT: 80,
@@ -27,66 +29,33 @@ const XRButton = ({ text, positionType = 'relative', positionBottom, backgroundC
 </Button>
 
 const Mobile = ({ onButtonClick }) => {
-  const getWindowMinimumSize = () => Math.min(window.innerHeight, window.innerWidth)
-  const MARGIN = 2 * Math.max(getWindowMinimumSize() * 0.025, 16)
-
   const xr_store = useXRStore()
 
-  return <Fullscreen
-    pointerEvents='listener'
-    alignItems='center'
-    justifyContent='center'
-    depthTest={false}
-  >
-    <Container
-      alignItems='center'
-      justifyContent='center'
-      width={window.innerWidth - MARGIN}
-      height={window.innerHeight - MARGIN}
-    >
-      <Button
-        variant='ghost'
-        aspectRatio={1}
-        backgroundOpacity={0.5}
-        height={26}
-        padding={0}
-        positionType='absolute'
-        positionLeft={DEVICE.isAppleMobile() ?  0 : 10}
-        positionTop={10}
-        onPointerDown={() => xr_store.getState().session.end()}
-      >
-        <Svg
-          src='./overlay/close_small.svg'
-          color={0xffffff}
-          height='100%'
-          hover={{ transformScale: 1.3 }}
-        />
-      </Button>
+  const clickHandler = shape => onButtonClick && typeof onButtonClick === 'function' && onButtonClick(shape)
 
-      <Container
-        positionType='absolute'
-        positionBottom={0}
-        alignItems='center'
-        justifyContent='center'
-        transformScale={0.52}
-      >
-        <Container
-          positionType='absolute'
-          positionBottom={0}
-          alignItems='center'
-          justifyContent='center'
-          height={BUTTON.HEIGHT + 10}
-          width={BUTTON.WIDTH * 4 * 1.2}
-          gapColumn={22}
-        >
-          <XRButton text='donut' onClick={() => onButtonClick && typeof onButtonClick === 'function' && onButtonClick(BUTTONS.DONUT)} />
-          <XRButton text='suzanne' onClick={() => onButtonClick && typeof onButtonClick === 'function' && onButtonClick(BUTTONS.SUZANNE)} />
-          <XRButton text='sphere' onClick={() => onButtonClick && typeof onButtonClick === 'function' && onButtonClick(BUTTONS.SPHERE)} />
-          <XRButton text='three.js' onClick={() => onButtonClick && typeof onButtonClick === 'function' && onButtonClick(BUTTONS.THREEJS)} />
-        </Container>
-      </Container>
-    </Container>
-  </Fullscreen>
+  return <XRDomOverlay>
+    <img
+      id='image_xr_close'
+      src='./overlay/close_xr.svg'
+      onPointerDown={() => xr_store.getState().session.end()}
+    />
+
+    <div id='div_xr_buttons'>
+      <button id='button_donut' onClick={() => clickHandler(BUTTONS.DONUT)}>
+        <text>donut</text>
+      </button>
+      <button id='button_suzanne' onClick={() => clickHandler(BUTTONS.SUZANNE)}>
+        <text>suzanne</text>
+      </button>
+      <button id='button_sphere' onClick={() => clickHandler(BUTTONS.SPHERE)}>
+        <text>sphere</text>
+      </button>
+      <button id='button_threejs' onClick={() => clickHandler(BUTTONS.THREEJS)}>
+        <text>three.js</text>
+      </button>
+    </div>
+
+  </XRDomOverlay>
 }
 
 const HMD = ({ onButtonClick }) => {
