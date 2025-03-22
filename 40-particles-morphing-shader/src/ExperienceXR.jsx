@@ -11,7 +11,7 @@ import { DOMOverlay } from './components/DOMOverlay'
 import { ParticlesMorph } from './components/ParticlesMorph'
 import { TweakPaneControls } from './components/TweakPaneControls'
 import { XRCameraRestore } from './components/XRCameraRestore'
-import { XROverlay } from './components/XROverlay'
+import { XROverlayHMD, XROverlayMobile } from './components/XROverlay'
 
 const xr_store = createXRStore({
   offerSession: false,
@@ -83,7 +83,7 @@ const ContentHMD = () => {
 
     <HandleTarget ref={refs.overlay}>
       <group>
-        <XROverlay onButtonClick={e => refs.particles?.current.particleMorph(e)} />
+        <XROverlayHMD onButtonClick={e => refs.particles?.current.particleMorph(e)} />
 
         <Handle
           targetRef='from-context'
@@ -114,7 +114,7 @@ const ContentHMD = () => {
         <Handle
           targetRef='from-context'
           scale={false}
-          translate={'as-rotate'}
+          translate={true}
           rotate='y'
         >
           <mesh>
@@ -145,7 +145,7 @@ const ContentMobile = () => {
   return <>
     <XROrigin position={DEFAULTS.POSITION} />
 
-    <XROverlay onButtonClick={e => refs.particles?.current.particleMorph(e)} />
+    <XROverlayMobile onButtonClick={e => refs.particles?.current.particleMorph(e)} />
 
     <HandleTarget>
       <group scale={DEFAULTS.SCALE}>

@@ -2,14 +2,12 @@ import { Container, Root, Text } from '@react-three/uikit'
 import { Button } from '@react-three/uikit-default'
 import { useXRStore, XRDomOverlay } from '@react-three/xr'
 
-import { DEVICE } from '../common/utils'
 import { BUTTONS } from './TweakPaneControls'
-
 import './xroverlay.css'
 
 const BUTTON = {
   HEIGHT: 80,
-  WIDTH: 148
+  WIDTH: 160
 }
 
 const XRButton = ({ text, positionType = 'relative', positionBottom, backgroundColor = 0x67b0ff, onClick }) => <Button
@@ -23,12 +21,12 @@ const XRButton = ({ text, positionType = 'relative', positionBottom, backgroundC
   onPointerDown={onClick}
 >
   <Text
-    fontSize={28}
+    fontSize={24}
     children={text}
   />
 </Button>
 
-const Mobile = ({ onButtonClick }) => {
+const XROverlayMobile = ({ onButtonClick }) => {
   const xr_store = useXRStore()
 
   const clickHandler = shape => onButtonClick && typeof onButtonClick === 'function' && onButtonClick(shape)
@@ -57,7 +55,7 @@ const Mobile = ({ onButtonClick }) => {
   </XRDomOverlay>
 }
 
-const HMD = ({ onButtonClick }) => {
+const XROverlayHMD = ({ onButtonClick }) => {
   const xr_store = useXRStore()
 
   return <Root
@@ -82,7 +80,7 @@ const HMD = ({ onButtonClick }) => {
     </Container>
 
     <XRButton
-      text={`exit session`}
+      text={'exit session'}
       backgroundColor={0xb5723c}
       positionType='absolute'
       positionBottom={80}
@@ -91,8 +89,4 @@ const HMD = ({ onButtonClick }) => {
   </Root>
 }
 
-const XROverlay = ({ onButtonClick }) => DEVICE.isMobile()
-  ? <Mobile onButtonClick={onButtonClick} />
-  : <HMD onButtonClick={onButtonClick} />
-
-export { XROverlay }
+export { XROverlayHMD, XROverlayMobile }
