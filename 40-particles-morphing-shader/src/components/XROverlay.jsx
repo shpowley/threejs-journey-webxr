@@ -54,7 +54,6 @@ const Mobile = ({ onButtonClick }) => {
         <text>three.js</text>
       </button>
     </div>
-
   </XRDomOverlay>
 }
 

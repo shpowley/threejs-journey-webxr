@@ -12,6 +12,7 @@ import { FirstFrame } from './components/FirstFrame'
 
 import portalFragmentShader from './shaders/portal/fragment.glsl'
 import portalVertexShader from './shaders/portal/vertex.glsl'
+import { XROverlay } from './components/XROverlay'
 
 const DEFAULTS = {
   VR: {
@@ -187,10 +188,12 @@ const ContentAR = () => {
    */
   return <>
     {
-      !DEVICE.isMobile() &&
-      <FirstFrame
-        onFirstFrame={camera => refs.handle?.current.position.setY(camera.position.y - 0.4)}
-      />
+      // on mobile - add DOM overlay - X (close button)
+      // on headset - set the scene position relative to the xr-camera
+      //   - 1st frame logic might seem a bit odd (kinda experimenting)
+      DEVICE.isMobile() ?
+        <XROverlay /> :
+        <FirstFrame onFirstFrame={camera => refs.handle?.current.position.setY(camera.position.y - 0.4)} />
     }
 
     <HandleTarget ref={refs.handle}>

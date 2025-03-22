@@ -9,6 +9,7 @@ import { CoffeeSmoke } from './components/CoffeeSmoke'
 import { DOMOverlay } from './components/DOMOverlay'
 import { FirstFrame } from './components/FirstFrame'
 import { XRCameraRestore } from './components/XRCameraRestore'
+import { XROverlay } from './components/XROverlay'
 
 const DEFAULTS = {
   VR: {
@@ -129,6 +130,10 @@ const ContentAR = () => {
   }, [])
 
   return <>
+    {
+      DEVICE.isMobile() && <XROverlay />
+    }
+
     <HandleTarget ref={refs.handle}>
       <group
         ref={refs.coffee_scene}

@@ -1,7 +1,6 @@
 const
   XR_URL = 'https://threejs-journey-morph-webxr.vercel.app',
-  USER_AGENT = navigator.userAgent.toLowerCase(),
-  URL_PARAMS = new URLSearchParams(window.location.search)
+  USER_AGENT = navigator.userAgent.toLowerCase()
 
 const DEVICE = {
   isTouchDevice: () => 'ontouchstart' in window || navigator.maxTouchPoints > 0 || navigator.msMaxTouchPoints > 0,

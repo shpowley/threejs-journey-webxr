@@ -14,8 +14,8 @@ import {
 import { ResizeListener, useForceUpdate } from './ResizeListener'
 
 const IMAGES = {
-  FULLSCREEN: '../overlay/fullscreen.svg',
-  FULLSCREEN_EXIT: '../overlay/fullscreen_exit.svg'
+  FULLSCREEN: './overlay/fullscreen.svg',
+  FULLSCREEN_EXIT: './overlay/fullscreen_exit.svg'
 }
 
 const DOMOverlay = ({ store }) => {
@@ -60,7 +60,7 @@ const DOMOverlay = ({ store }) => {
     <img
       id='image_menu'
       title='menu'
-      src='../overlay/menu.svg'
+      src='./overlay/menu.svg'
       onClick={handlers.openModal}
     />
 

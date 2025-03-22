@@ -2,27 +2,42 @@ import { useCallback, useRef } from 'react'
 
 import {
   DEVICE,
+  WINDOW_MODE,
   appClipLaunch,
   closeDialog,
+  getWindowMode,
   metaQuestWebLaunch,
-  openDialog
+  openDialog,
+  toggleFullscreen
 } from '../common/utils'
+
+import { ResizeListener, useForceUpdate } from './ResizeListener'
+
+const IMAGES = {
+  FULLSCREEN: './overlay/fullscreen.svg',
+  FULLSCREEN_EXIT: './overlay/fullscreen_exit.svg'
+}
 
 const DOMOverlay = ({ store }) => {
   const refs = {
-    modal_vr: useRef(),
+    modal_info: useRef(),
     div_info: useRef(),
-    div_qr: useRef()
+    div_qr: useRef(),
+    fullscreen: useRef()
   }
+
+  const fullscreen_state = getWindowMode()
+  const forceUpdate = useForceUpdate()
 
   const handlers = {
     openModal: useCallback(() => {
-      refs.div_info.current.style.display = 'block'
-      refs.div_qr.current.style.display = 'none'
-      openDialog(refs.modal_vr.current)
+      const is_headset = DEVICE.isHeadset()
+      refs.div_info.current.style.display = is_headset ? 'block' : 'none'
+      refs.div_qr.current.style.display = is_headset ? 'none' : 'block'
+      openDialog(refs.modal_info.current)
     }, []),
 
-    closeModal: () => closeDialog(refs.modal_vr.current),
+    closeModal: () => closeDialog(refs.modal_info.current),
 
     showButtonContent: useCallback(content => {
       refs.div_info.current.style.display = content === refs.div_info.current ? 'block' : 'none'
@@ -31,25 +46,39 @@ const DOMOverlay = ({ store }) => {
   }
 
   return <>
+    <ResizeListener onResize={forceUpdate} />
+
     {/* scene title info */}
     <div id='title'>
       Portal Scene with R3F (VR)<br />
       <a href='https://threejs-journey.com'>threejs-journey.com</a>
     </div>
 
-    {/* VR icon "ready player one" */}
+    {/* menu */}
     <img
-      id='image_vr'
-      src='./overlay/ready.webp'
-
-      onPointerDown={handlers.openModal}
+      id='image_menu'
+      title='menu'
+      src='./overlay/menu.svg'
+      onClick={handlers.openModal}
     />
+
+    {/* fullscreen */}
+    {
+      !DEVICE.isAppleMobile() &&
+      <img
+        ref={refs.fullscreen}
+        id='image_fullscreen'
+        title='fullscreen'
+        src={fullscreen_state === WINDOW_MODE.FULLSCREEN_API ? IMAGES.FULLSCREEN_EXIT : IMAGES.FULLSCREEN}
+        onClick={toggleFullscreen}
+      />
+    }
 
     {/* modal overlay */}
     <div
       id='modal_vr'
       className='modal'
-      ref={refs.modal_vr}
+      ref={refs.modal_info}
 
       onPointerDown={handlers.closeModal}
     >
@@ -105,8 +134,7 @@ const DOMOverlay = ({ store }) => {
           </p>
           <br />
           <p>
-            refactored for webxr<br />
-            sung powley <a href='https://bsky.app/profile/sung-powley.bsky.social'>bluesky</a>
+            <a href='https://bsky.app/profile/sung-powley.bsky.social'>@sung-powley.bsky.social</a>
           </p>
 
         </div>
