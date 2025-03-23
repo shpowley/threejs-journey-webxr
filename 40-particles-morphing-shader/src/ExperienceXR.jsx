@@ -16,7 +16,7 @@ import { XROverlayHMD, XROverlayMobile } from './components/XROverlay'
 const xr_store = createXRStore({
   offerSession: false,
   frameBufferScaling: 1.5,
-  foveation: 0, // large rectangulr artifacts noticeable in "bright glow" immersive-vr @ foveation = 1
+  foveation: 0, // large rectangular artifacts noticeable in "bright glow" immersive-vr @ foveation = 1
 
   hand: {
     rayPointer: {

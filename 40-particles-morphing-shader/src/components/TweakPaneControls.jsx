@@ -86,4 +86,4 @@ const TweakPaneControls = ({ onButtonClick }) => {
   return null
 }
 
-export { BUTTONS, SIGNALS, TweakPaneControls }
+export { BUTTONS, TweakPaneControls }

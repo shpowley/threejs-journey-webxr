@@ -1,7 +1,7 @@
 import { effect } from '@preact/signals-react'
 import { useThree } from '@react-three/fiber'
 
-import { SIGNALS } from './TweakPaneControls'
+import { SIGNALS } from '../common/params'
 
 const ClearColor = () => {
   const gl = useThree(s => s.gl)
