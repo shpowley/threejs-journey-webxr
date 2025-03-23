@@ -1,3 +1,4 @@
+import { effect } from '@preact/signals-react'
 import { useTexture } from '@react-three/drei'
 import { useFrame } from '@react-three/fiber'
 import { useCallback, useEffect, useRef } from 'react'
@@ -54,6 +55,23 @@ const Earth = () => {
 
   useEffect(() => {
     handlers.updateSun()
+
+    const effectAtmosphere = effect(() => {
+      refs.atmosphere_material.current.uniforms.uAtmosphereDayColor.value.set(SIGNALS.atmosphere_color.day.value)
+      refs.earth_material.current.uniforms.uAtmosphereDayColor.value.set(SIGNALS.atmosphere_color.day.value)
+      refs.atmosphere_material.current.uniforms.uAtmosphereTwilightColor.value.set(SIGNALS.atmosphere_color.night.value)
+      refs.earth_material.current.uniforms.uAtmosphereTwilightColor.value.set(SIGNALS.atmosphere_color.night.value)
+    })
+
+    const effectSunPosition = effect(() => {
+      sun.spherical.current.set(1, SIGNALS.sun_angle.phi.value, SIGNALS.sun_angle.theta.value)
+      handlers.updateSun()
+    })
+
+    return () => {
+      effectAtmosphere()
+      effectSunPosition()
+    }
   }, [])
 
   useFrame((state, delta) => {

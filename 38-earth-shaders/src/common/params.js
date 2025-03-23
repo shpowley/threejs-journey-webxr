@@ -9,8 +9,8 @@ const SIGNALS = {
   },
 
   sun_angle: {
-    phi: signal(Math.PI * 0.5),   // polar
-    theta: signal(0.5)            // equator
+    phi: signal(Math.PI * 0.5),   // polar angle
+    theta: signal(0.5)            // equatorial angle
   }
 }
 
