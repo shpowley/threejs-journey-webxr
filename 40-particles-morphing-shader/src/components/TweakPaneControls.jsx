@@ -45,7 +45,7 @@ const TweakPaneControls = ({ onButtonClick }) => {
       })
       .on('change', e => SIGNALS.progress.value = e.value)
 
-    const disposeSignal = effect(() => progress_binding.value = SIGNALS.progress.value)
+    const disposeSignal = effect(() => progress_binding.value = SIGNALS.progress.value) // effect allows slider to move in real-time with signal
 
     pane.addBlade({ view: 'separator' })
 

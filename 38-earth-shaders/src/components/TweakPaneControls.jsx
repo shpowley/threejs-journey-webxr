@@ -28,7 +28,7 @@ const TweakPaneControls = ({ onButtonClick }) => {
     pane
       .addBlade({
         view: 'slider',
-        label: 'sun polar angle (phi)',
+        label: 'sun polar ∠ (phi)',
         min: 0,
         max: Math.PI,
         value: SIGNALS.sun_angle.phi.value,
@@ -39,7 +39,7 @@ const TweakPaneControls = ({ onButtonClick }) => {
     pane
       .addBlade({
         view: 'slider',
-        label: 'sun equator angle (theta)',
+        label: 'sun equator ∠ (theta)',
         min: -Math.PI,
         max: Math.PI,
         value: SIGNALS.sun_angle.theta.value,

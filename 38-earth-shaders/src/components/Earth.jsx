@@ -13,7 +13,7 @@ import earthVertexShader from '../shaders/earth/vertex.glsl'
 
 const earthGeometry = new THREE.SphereGeometry(2, 64, 64)
 
-const Earth = () => {
+const Earth = ({ sun_visible = true }) => {
   const refs = {
     earth: useRef(),
     earth_material: useRef(),
@@ -30,7 +30,7 @@ const Earth = () => {
     updateSun: useCallback(() => {
       sun.direction.current.setFromSpherical(sun.spherical.current)
 
-      refs.sun.current.position
+      refs.sun.current?.position
         .copy(sun.direction.current)
         .multiplyScalar(5)
 
@@ -122,10 +122,13 @@ const Earth = () => {
     </mesh>
 
     {/* sun */}
-    <mesh ref={refs.sun}>
-      <icosahedronGeometry args={[0.1, 2]} />
-      <meshBasicMaterial />
-    </mesh>
+    {
+      sun_visible &&
+      <mesh ref={refs.sun}>
+        <icosahedronGeometry args={[0.1, 2]} />
+        <meshBasicMaterial />
+      </mesh>
+    }
   </>
 }
 

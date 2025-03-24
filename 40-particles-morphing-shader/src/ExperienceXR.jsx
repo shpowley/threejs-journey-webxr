@@ -204,7 +204,7 @@ const ExperienceXR = () => {
           <ContentNormal />
         </IfInSessionMode>
 
-        {/* EITHER AR OR VR */}
+        {/* AR / VR SESSION */}
         <IfInSessionMode allow={['immersive-ar', 'immersive-vr']}>
           {
             DEVICE.isMobile() ?
