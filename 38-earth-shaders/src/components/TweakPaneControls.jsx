@@ -1,4 +1,3 @@
-import { effect } from '@preact/signals-react'
 import { useEffect } from 'react'
 import { Pane } from 'tweakpane'
 

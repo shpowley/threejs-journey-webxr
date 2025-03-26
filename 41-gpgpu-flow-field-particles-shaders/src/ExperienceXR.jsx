@@ -3,8 +3,11 @@ import { Canvas } from '@react-three/fiber'
 import { createXRStore, IfInSessionMode, noEvents, PointerEvents, XR } from '@react-three/xr'
 
 import { PIXEL_RATIO } from './common/params'
-import { DEVICE } from './common/utils'
-import { Earth } from './components/Earth'
+import { ClearColor } from './components/ClearColor'
+import { DOMOverlay } from './components/DOMOverlay'
+import { GPGPU } from './components/GPGPU'
+import { XRCameraRestore } from './components/XRCameraRestore'
+import { TweakPaneControls } from './components/TweakPaneControls'
 
 const xr_store = createXRStore({
   offerSession: false,
@@ -45,13 +48,16 @@ const xr_store = createXRStore({
 
 const ContentNormal = () => {
   return <>
+    <TweakPaneControls />
     <OrbitControls />
-    <Earth />
+    <GPGPU />
   </>
 }
 
 const ExperienceXR = () => {
   return <>
+    <DOMOverlay />
+
     <Canvas
       flat
 
@@ -59,7 +65,8 @@ const ExperienceXR = () => {
         fov: 35,
         near: 0.1,
         far: 100,
-        position: [0, 0, DEVICE.isMobile() ? 30 : 16]
+        position: [5.4, 4, 13.2]
+        // position: [4.5, 4, 11] // original
       }}
 
       gl={{
@@ -69,10 +76,10 @@ const ExperienceXR = () => {
 
       events={noEvents}
     >
-      <color args={['#030202']} attach="background" />
-
       <XR store={xr_store}>
         <PointerEvents />
+        <ClearColor />
+        <XRCameraRestore />
 
         {/* THE 'ORIGINAL' NON-XR SCENE */}
         <IfInSessionMode deny={['immersive-ar', 'immersive-vr']}>
