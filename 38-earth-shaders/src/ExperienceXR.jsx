@@ -101,7 +101,6 @@ const ContentMobile = () => {
 
   return <>
     <XROrigin position={DEFAULTS.POSITION} />
-
     <XROverlay />
 
     <HandleTarget>

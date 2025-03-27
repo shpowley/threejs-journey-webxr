@@ -1,5 +1,5 @@
 const
-  XR_URL = 'https://threejs-journey-morph-webxr.vercel.app',
+  XR_URL = 'https://threejs-journey-gpgpu-webxr.vercel.app',
   USER_AGENT = navigator.userAgent.toLowerCase()
 
 const DEVICE = {

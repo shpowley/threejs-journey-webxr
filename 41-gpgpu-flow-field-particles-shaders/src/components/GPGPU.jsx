@@ -12,7 +12,7 @@ import particlesVertexShader from '../shaders/particles/vertex.glsl'
 import { PIXEL_RATIO, SIGNALS } from '../common/params'
 import { ResizeListener } from './ResizeListener'
 
-const GPGPU = () => {
+const GPGPU = ({ particle_scale = 1 }) => {
   const base_geometry = {
     instance: useRef(),
     count: useRef()
@@ -46,7 +46,8 @@ const GPGPU = () => {
   const { scene } = useGLTF('./model.glb')
 
   useEffect(() => {
-    if (scene && !base_geometry.instance.current) {
+    // if (scene && !base_geometry.instance.current) {
+    if (scene) {
 
       // -- BASE GEOMETRY --
       base_geometry.instance.current = scene.children[0].geometry
@@ -133,7 +134,7 @@ const GPGPU = () => {
     })
 
     const effectField = effect(() => {
-      particles.material.current.uniforms.uSize.value = SIGNALS.particle_size.value
+      particles.material.current.uniforms.uSize.value = SIGNALS.particle_size.value * particle_scale
       gpgpu.particles_variable.current.material.uniforms.uFlowFieldInfluence.value = SIGNALS.field_influence.value
       gpgpu.particles_variable.current.material.uniforms.uFlowFieldStrength.value = SIGNALS.field_strength.value
       gpgpu.particles_variable.current.material.uniforms.uFlowFieldFrequency.value = SIGNALS.field_frequency.value
@@ -147,16 +148,18 @@ const GPGPU = () => {
 
   useFrame((state, delta) => {
     // gpgpu update
-    gpgpu.particles_variable.current.material.uniforms.uTime.value = state.clock.getElapsedTime()
-    gpgpu.particles_variable.current.material.uniforms.uDeltaTime.value = delta
-    gpgpu.computation.current.compute()
-    particles.material.current.uniforms.uParticlesTexture.value = gpgpu.computation.current.getCurrentRenderTarget(gpgpu.particles_variable.current).texture
+    if (gpgpu.particles_variable.current) {
+      gpgpu.particles_variable.current.material.uniforms.uTime.value = state.clock.getElapsedTime()
+      gpgpu.particles_variable.current.material.uniforms.uDeltaTime.value = delta
+      gpgpu.computation.current.compute()
+      particles.material.current.uniforms.uParticlesTexture.value = gpgpu.computation.current.getCurrentRenderTarget(gpgpu.particles_variable.current).texture
+    }
   })
 
   return <>
     <ResizeListener onResize={handlers.resize} />
 
-    <points>
+    <points frustumCulled={false}>
       <bufferGeometry ref={particles.geometry} />
       <shaderMaterial
         ref={particles.material}
@@ -164,7 +167,7 @@ const GPGPU = () => {
         fragmentShader={particlesFragmentShader}
 
         uniforms={{
-          uSize: new THREE.Uniform(SIGNALS.particle_size.value),
+          uSize: new THREE.Uniform(SIGNALS.particle_size.value * particle_scale),
           uResolution: new THREE.Uniform(new THREE.Vector2(window.innerWidth * PIXEL_RATIO, window.innerHeight * PIXEL_RATIO)),
           uParticlesTexture: new THREE.Uniform()
         }}

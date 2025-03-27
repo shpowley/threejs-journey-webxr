@@ -15,21 +15,21 @@
   "devDependencies": {
     "@vitejs/plugin-basic-ssl": "^2.0.0",
     "@vitejs/plugin-react": "^4.3.4",
-    "vite": "^6.2.2",
+    "vite": "^6.2.3",
     "vite-plugin-glsl": "^1.3.3",
     "vite-plugin-restart": "^0.4.2"
   },
   "dependencies": {
     "@preact/signals-react": "^3.0.1",
-    "@react-three/drei": "^10.0.4",
+    "@react-three/drei": "^10.0.5",
     "@react-three/fiber": "^9.1.0",
-    "@react-three/handle": "^6.6.9",
-    "@react-three/uikit": "^0.8.14",
     "@react-three/uikit-default": "^0.8.14",
-    "@react-three/xr": "^6.6.9",
+    "@react-three/uikit": "^0.8.14",
+    "@react-three/handle": "^6.6.11",
+    "@react-three/xr": "^6.6.11",
     "@tweenjs/tween.js": "^25.0.0",
-    "react": "^19.0.0",
     "react-dom": "^19.0.0",
+    "react": "^19.0.0",
     "three": "^0.174.0",
     "tweakpane": "^4.0.5"
   }
