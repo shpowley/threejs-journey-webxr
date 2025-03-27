@@ -96,8 +96,13 @@ const ContentHMD = () => {
 const ContentMobile = () => {
   const DEFAULTS = {
     SCALE: 0.1,
-    POSITION: [-0.1, -1, 1.4],
-    ROTATION: -Math.PI * 0.15
+    ROTATION: -Math.PI * 0.15,
+
+    POSITION: [
+      -0.1,
+      DEVICE.isAppleMobile() ? -1.4 : -1.1,
+      1.4
+    ],
   }
 
   return <>
@@ -109,7 +114,7 @@ const ContentMobile = () => {
         scale={DEFAULTS.SCALE}
         rotation-y={DEFAULTS.ROTATION}
       >
-        <GPGPU particle_scale={0.08} />
+        <GPGPU particle_scale={DEVICE.isAppleMobile() ? 0.04 : 0.08} />
 
         <Handle
           targetRef='from-context'
