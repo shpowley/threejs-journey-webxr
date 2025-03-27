@@ -53,6 +53,13 @@ This project is **free and open-source**. It is licensed under the [MIT License]
 - **React Three Fiber & WebXR** - [react-three/xr](https://github.com/pmndrs/react-three-xr)
 - **Hosting** - [Vercel](https://vercel.com/)
 
+## Additional WebXR Project
+Alongside this project, I also developed a WebXR port of Bruno Simon's final Three.js Journey lesson:
+
+- **Marble Race Remix** - An experimental WebXR adaptation of Bruno’s marble race lesson, featuring extensive experimentation in mixed-reality and immersive-VR.
+  - **GitHub:** [threejs-journey-marble-race-remix](https://github.com/shpowley/threejs-journey-marble-race-remix)
+  - **Live Demo:** [Marble Race Remix](https://marble-race-remix.vercel.app/)
+
 ## Feedback & Contributions
 Contributions and feedback are welcome! Feel free to open an issue or submit a pull request.
 
